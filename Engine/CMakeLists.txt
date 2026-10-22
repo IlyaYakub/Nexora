@@ -17,6 +17,10 @@ set(ENGINE_SOURCES
     Source/Core/Utility.h
     Source/Graphics/Vulkan/VulkanGraphicsContext.h
     Source/Graphics/Vulkan/VulkanGraphicsContext.cpp
+    Source/Graphics/Vulkan/VulkanCommandBuffer.h
+    Source/Graphics/Vulkan/VulkanCommandBuffer.cpp
+    Source/Graphics/Vulkan/VulkanCommandPool.h
+    Source/Graphics/Vulkan/VulkanCommandPool.cpp
     Source/Graphics/Vulkan/VulkanDevice.h
     Source/Graphics/Vulkan/VulkanDevice.cpp
     Source/Graphics/Vulkan/VulkanInstance.h
