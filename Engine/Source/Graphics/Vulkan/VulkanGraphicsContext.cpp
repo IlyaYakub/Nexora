@@ -13,14 +13,14 @@ constexpr bool EnableValidation = true;
 #endif
 }  // namespace
 
-VulkanGraphicsContext::VulkanGraphicsContext(const GLFWWindow& window)
-    : m_instance({.extensions = window.requiredVulkanExtensions(), .enableValidation = EnableValidation}),
-      m_surface(window.createVulkanSurface(m_instance.handle())), m_physicalDevice(m_instance.handle(), m_surface),
-      m_device(m_physicalDevice)
+VulkanGraphicsContext::VulkanGraphicsContext(const GLFWWindow& window, bool vsync)
 {
-}
+    m_instance = std::make_shared<VulkanInstance>(
+        VulkanInstanceSettings{.extensions = window.requiredVulkanExtensions(), .enableValidation = EnableValidation});
+    m_surface = std::make_shared<VulkanSurface>(m_instance, window);
+    m_physicalDevice = std::make_shared<VulkanPhysicalDevice>(m_instance, *m_surface);
+    m_device = std::make_shared<VulkanDevice>(m_physicalDevice);
 
-VulkanGraphicsContext::~VulkanGraphicsContext()
-{
-    vkDestroySurfaceKHR(m_instance.handle(), m_surface, nullptr);
+    const VkExtent2D extent{static_cast<uint32_t>(window.width()), static_cast<uint32_t>(window.height())};
+    m_swapchain = std::make_unique<VulkanSwapchain>(m_device, m_surface, extent, vsync);
 }

@@ -1,5 +1,8 @@
 #include "Graphics/Vulkan/VulkanPhysicalDevice.h"
 
+#include "Graphics/Vulkan/VulkanInstance.h"
+#include "Graphics/Vulkan/VulkanSurface.h"
+
 using namespace Nexora;
 
 DEFINE_LOG_CATEGORY_STATIC(LogVulkanPhysicalDevice)
@@ -41,19 +44,31 @@ std::optional<VulkanQueueFamilies> findQueueFamilies(VkPhysicalDevice device, Vk
     }
     return std::nullopt;
 }
-}  // namespace
 
-VulkanPhysicalDevice::VulkanPhysicalDevice(VkInstance instance, VkSurfaceKHR surface)
+bool supportsSwapchain(VkPhysicalDevice device)
 {
     uint32_t count = 0;
-    VK_CHECK(vkEnumeratePhysicalDevices(instance, &count, nullptr));
+    VK_CHECK(vkEnumerateDeviceExtensionProperties(device, nullptr, &count, nullptr));
+    std::vector<VkExtensionProperties> extensions(count);
+    VK_CHECK(vkEnumerateDeviceExtensionProperties(device, nullptr, &count, extensions.data()));
+
+    return std::ranges::any_of(extensions,
+        [](const VkExtensionProperties& extension) { return std::strcmp(extension.extensionName, VK_KHR_SWAPCHAIN_EXTENSION_NAME) == 0; });
+}
+}  // namespace
+
+VulkanPhysicalDevice::VulkanPhysicalDevice(std::shared_ptr<VulkanInstance> instance, const VulkanSurface& surface)
+    : m_instance(std::move(instance))
+{
+    uint32_t count = 0;
+    VK_CHECK(vkEnumeratePhysicalDevices(m_instance->handle(), &count, nullptr));
     std::vector<VkPhysicalDevice> devices(count);
-    VK_CHECK(vkEnumeratePhysicalDevices(instance, &count, devices.data()));
+    VK_CHECK(vkEnumeratePhysicalDevices(m_instance->handle(), &count, devices.data()));
 
     for (VkPhysicalDevice device : devices)
     {
-        const std::optional<VulkanQueueFamilies> families = findQueueFamilies(device, surface);
-        if (!families)
+        const std::optional<VulkanQueueFamilies> families = findQueueFamilies(device, surface.handle());
+        if (!families || !supportsSwapchain(device))
         {
             continue;
         }
@@ -77,7 +92,7 @@ VulkanPhysicalDevice::VulkanPhysicalDevice(VkInstance instance, VkSurfaceKHR sur
 
     if (!m_physicalDevice)
     {
-        NX_LOG(LogVulkanPhysicalDevice, Fatal, "No GPU with graphics and present support");
+        NX_LOG(LogVulkanPhysicalDevice, Fatal, "No GPU with graphics, present and swapchain support");
     }
 
     NX_LOG(LogVulkanPhysicalDevice, Display, "Selected GPU: {} ({}), queue families: graphics {}, present {}", m_properties.deviceName,

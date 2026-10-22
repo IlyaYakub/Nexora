@@ -1,9 +1,13 @@
 #pragma once
 
+#include <memory>
+
 #include "Core/Utility.h"
 #include "Graphics/Vulkan/VulkanDevice.h"
 #include "Graphics/Vulkan/VulkanInstance.h"
 #include "Graphics/Vulkan/VulkanPhysicalDevice.h"
+#include "Graphics/Vulkan/VulkanSurface.h"
+#include "Graphics/Vulkan/VulkanSwapchain.h"
 
 namespace Nexora
 {
@@ -13,19 +17,21 @@ class GLFWWindow;
 class VulkanGraphicsContext final : public NonCopyable
 {
 public:
-    explicit VulkanGraphicsContext(const GLFWWindow& window);
-    ~VulkanGraphicsContext();
+    VulkanGraphicsContext(const GLFWWindow& window, bool vsync);
 
-    const VulkanInstance& instance() const { return m_instance; }
-    VkSurfaceKHR surface() const { return m_surface; }
-    const VulkanPhysicalDevice& physicalDevice() const { return m_physicalDevice; }
-    const VulkanDevice& device() const { return m_device; }
+    const std::shared_ptr<VulkanInstance>& instance() const { return m_instance; }
+    const std::shared_ptr<VulkanSurface>& surface() const { return m_surface; }
+    const std::shared_ptr<VulkanPhysicalDevice>& physicalDevice() const { return m_physicalDevice; }
+    const std::shared_ptr<VulkanDevice>& device() const { return m_device; }
+    VulkanSwapchain& swapchain() { return *m_swapchain; }
+    const VulkanSwapchain& swapchain() const { return *m_swapchain; }
 
 private:
-    VulkanInstance m_instance;
-    VkSurfaceKHR m_surface{VK_NULL_HANDLE};
-    VulkanPhysicalDevice m_physicalDevice;
-    VulkanDevice m_device;
+    std::shared_ptr<VulkanInstance> m_instance;
+    std::shared_ptr<VulkanSurface> m_surface;
+    std::shared_ptr<VulkanPhysicalDevice> m_physicalDevice;
+    std::shared_ptr<VulkanDevice> m_device;
+    std::unique_ptr<VulkanSwapchain> m_swapchain;
 };
 
 }  // namespace Nexora

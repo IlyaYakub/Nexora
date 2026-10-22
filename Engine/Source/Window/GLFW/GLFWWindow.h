@@ -19,6 +19,7 @@ struct WindowSettings
     int width{1280};
     int height{720};
     bool visible{true};
+    bool vsync{true};
 };
 
 // The only window of the engine. Owns GLFW lifetime: glfwInit in constructor, glfwTerminate in destructor.

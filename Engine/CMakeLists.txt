@@ -23,6 +23,10 @@ set(ENGINE_SOURCES
     Source/Graphics/Vulkan/VulkanInstance.cpp
     Source/Graphics/Vulkan/VulkanPhysicalDevice.h
     Source/Graphics/Vulkan/VulkanPhysicalDevice.cpp
+    Source/Graphics/Vulkan/VulkanSurface.h
+    Source/Graphics/Vulkan/VulkanSurface.cpp
+    Source/Graphics/Vulkan/VulkanSwapchain.h
+    Source/Graphics/Vulkan/VulkanSwapchain.cpp
     Source/Event/InputEvents.h
     Source/Event/WindowEvents.h
     Source/Input/KeyCodes.h

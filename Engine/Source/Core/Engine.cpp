@@ -21,7 +21,7 @@ Engine::Engine(const WindowSettings& windowSettings)
         return;
     }
 
-    m_graphicsContext = std::make_unique<VulkanGraphicsContext>(*m_window);
+    m_graphicsContext = std::make_unique<VulkanGraphicsContext>(*m_window, windowSettings.vsync);
 
     NX_LOG(LogEngine, Display, "Engine initialized");
 }
@@ -59,4 +59,9 @@ void Engine::onWindowClosed(const WindowClosedEvent& /*event*/)
 void Engine::onWindowResized(const WindowResizedEvent& event)
 {
     NX_LOG(LogEngine, Display, "Window resized: {}x{}", event.width, event.height);
+
+    if (isInitialized() && event.width > 0 && event.height > 0)
+    {
+        m_graphicsContext->swapchain().recreate({static_cast<uint32_t>(event.width), static_cast<uint32_t>(event.height)});
+    }
 }
