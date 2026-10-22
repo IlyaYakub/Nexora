@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Engine (Debug)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/Build/bin/Debug/NexoraEngine.exe",
+            "cwd": "${workspaceFolder}/Build/bin/Debug",
+            "console": "integratedTerminal",
+            "preLaunchTask": "Build Debug"
+        },
+        {
+            "name": "Tests (Debug)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/Build/bin/Debug/NexoraEngineTestRunner.exe",
+            "cwd": "${workspaceFolder}/Build/bin/Debug",
+            "console": "integratedTerminal",
+            "preLaunchTask": "Build Debug"
+        }
+    ]
+}

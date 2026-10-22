@@ -1,0 +1,27 @@
+{
+    "version": 4,
+    "configurePresets": [
+        {
+            "name": "windows",
+            "displayName": "Windows (Visual Studio 2026)",
+            "generator": "Visual Studio 18 2026",
+            "architecture": "x64",
+            "binaryDir": "${sourceDir}/Build",
+            "toolchainFile": "${sourceDir}/Build/conan/conan_toolchain.cmake"
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "debug",
+            "displayName": "Debug",
+            "configurePreset": "windows",
+            "configuration": "Debug"
+        },
+        {
+            "name": "release",
+            "displayName": "Release",
+            "configurePreset": "windows",
+            "configuration": "Release"
+        }
+    ]
+}

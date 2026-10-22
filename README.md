@@ -13,6 +13,7 @@
 - CMake 3.31+
 - Python 3
 - Conan 2 (`pip install conan`)
+- Vulkan SDK (LunarG), переменная окружения `VULKAN_SDK`
 - clang-format — только для форматирования кода
 
 ## Сборка
@@ -40,3 +41,11 @@ Automation\clean_rebuild_test.bat Release
 - `NexoraEngineTestRunner.exe` — тесты
 
 Решение для Visual Studio: `Build\Nexora.slnx`.
+
+## VS Code
+
+Нужны расширения C/C++ и CMake Tools (VS Code предложит их при открытии папки).
+
+1. `Ctrl+Shift+P` → `Tasks: Run Task` → `Generate` — ставит зависимости Conan и генерирует проект. Нужно один раз и после изменения `conanfile.txt`.
+2. CMake Tools подхватывает пресет `windows` из `CMakePresets.json`, IntelliSense берёт настройки из него.
+3. `Ctrl+Shift+B` — сборка Debug, `F5` — запуск движка или тестов под отладчиком.

@@ -1,0 +1,53 @@
+{
+    "version": "2.0.0",
+    "inputs": [
+        {
+            "id": "config",
+            "type": "pickString",
+            "description": "Configuration",
+            "options": ["Debug", "Release"],
+            "default": "Debug"
+        }
+    ],
+    "tasks": [
+        {
+            "label": "Generate",
+            "type": "shell",
+            "command": "python Automation/automation.py generate --config ${input:config}",
+            "problemMatcher": []
+        },
+        {
+            "label": "Build Debug",
+            "type": "shell",
+            "command": "python Automation/automation.py build --config Debug",
+            "group": { "kind": "build", "isDefault": true },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "Build Release",
+            "type": "shell",
+            "command": "python Automation/automation.py build --config Release",
+            "group": "build",
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "Test",
+            "type": "shell",
+            "command": "python Automation/automation.py build test --config ${input:config}",
+            "group": { "kind": "test", "isDefault": true },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "Clean Rebuild Test",
+            "type": "shell",
+            "command": "python Automation/automation.py clean rebuild test --config ${input:config}",
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "Format",
+            "type": "shell",
+            "command": "python Automation/automation.py format",
+            "problemMatcher": []
+        }
+    ]
+}

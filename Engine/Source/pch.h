@@ -5,6 +5,7 @@
 #include <cstring>
 #include <format>
 #include <memory>
+#include <optional>
 #include <source_location>
 #include <string>
 #include <string_view>

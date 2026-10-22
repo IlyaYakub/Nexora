@@ -17,8 +17,12 @@ set(ENGINE_SOURCES
     Source/Core/Utility.h
     Source/Graphics/Vulkan/VulkanGraphicsContext.h
     Source/Graphics/Vulkan/VulkanGraphicsContext.cpp
+    Source/Graphics/Vulkan/VulkanDevice.h
+    Source/Graphics/Vulkan/VulkanDevice.cpp
     Source/Graphics/Vulkan/VulkanInstance.h
     Source/Graphics/Vulkan/VulkanInstance.cpp
+    Source/Graphics/Vulkan/VulkanPhysicalDevice.h
+    Source/Graphics/Vulkan/VulkanPhysicalDevice.cpp
     Source/Event/InputEvents.h
     Source/Event/WindowEvents.h
     Source/Input/KeyCodes.h

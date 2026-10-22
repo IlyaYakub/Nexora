@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 
+#include <Volk/volk.h>
 #include <entt/signal/fwd.hpp>
 
 #include "Core/Utility.h"
@@ -41,6 +42,7 @@ public:
     void setSize(int width, int height);
 
     std::vector<const char*> requiredVulkanExtensions() const;
+    VkSurfaceKHR createVulkanSurface(VkInstance instance) const;
 
 private:
     entt::dispatcher& m_events;

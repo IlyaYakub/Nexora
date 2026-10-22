@@ -14,6 +14,13 @@ constexpr bool EnableValidation = true;
 }  // namespace
 
 VulkanGraphicsContext::VulkanGraphicsContext(const GLFWWindow& window)
-    : m_instance({.extensions = window.requiredVulkanExtensions(), .enableValidation = EnableValidation})
+    : m_instance({.extensions = window.requiredVulkanExtensions(), .enableValidation = EnableValidation}),
+      m_surface(window.createVulkanSurface(m_instance.handle())), m_physicalDevice(m_instance.handle(), m_surface),
+      m_device(m_physicalDevice)
 {
+}
+
+VulkanGraphicsContext::~VulkanGraphicsContext()
+{
+    vkDestroySurfaceKHR(m_instance.handle(), m_surface, nullptr);
 }

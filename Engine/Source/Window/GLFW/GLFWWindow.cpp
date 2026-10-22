@@ -75,6 +75,7 @@ GLFWWindow::GLFWWindow(const WindowSettings& settings, entt::dispatcher& events)
     }
     m_glfwInitialized = true;
 
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_VISIBLE, settings.visible ? GLFW_TRUE : GLFW_FALSE);
     m_window = glfwCreateWindow(settings.width, settings.height, settings.title.c_str(), nullptr, nullptr);
     if (!m_window)
@@ -175,4 +176,11 @@ std::vector<const char*> GLFWWindow::requiredVulkanExtensions() const
     uint32_t count = 0;
     const char** extensions = glfwGetRequiredInstanceExtensions(&count);
     return extensions ? std::vector<const char*>(extensions, extensions + count) : std::vector<const char*>{};
+}
+
+VkSurfaceKHR GLFWWindow::createVulkanSurface(VkInstance instance) const
+{
+    VkSurfaceKHR surface = VK_NULL_HANDLE;
+    VK_CHECK(glfwCreateWindowSurface(instance, m_window, nullptr, &surface));
+    return surface;
 }
