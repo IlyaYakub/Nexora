@@ -164,3 +164,15 @@ void GLFWWindow::setSize(int width, int height)
         glfwSetWindowSize(m_window, width, height);
     }
 }
+
+std::vector<const char*> GLFWWindow::requiredVulkanExtensions() const
+{
+    if (!m_glfwInitialized)
+    {
+        return {};
+    }
+
+    uint32_t count = 0;
+    const char** extensions = glfwGetRequiredInstanceExtensions(&count);
+    return extensions ? std::vector<const char*>(extensions, extensions + count) : std::vector<const char*>{};
+}

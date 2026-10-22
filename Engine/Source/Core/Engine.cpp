@@ -21,6 +21,8 @@ Engine::Engine(const WindowSettings& windowSettings)
         return;
     }
 
+    m_graphicsContext = std::make_unique<VulkanGraphicsContext>(*m_window);
+
     NX_LOG(LogEngine, Display, "Engine initialized");
 }
 

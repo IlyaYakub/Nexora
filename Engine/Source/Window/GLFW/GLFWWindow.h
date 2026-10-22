@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include <entt/signal/fwd.hpp>
 
@@ -38,6 +39,8 @@ public:
     int width() const;
     int height() const;
     void setSize(int width, int height);
+
+    std::vector<const char*> requiredVulkanExtensions() const;
 
 private:
     entt::dispatcher& m_events;

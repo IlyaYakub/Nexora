@@ -4,6 +4,7 @@ find_package(spdlog REQUIRED)
 find_package(GTest REQUIRED)
 find_package(glfw3 REQUIRED)
 find_package(EnTT REQUIRED)
+find_package(Vulkan REQUIRED COMPONENTS volk)
 
 # version header is generated into the build folder
 configure_file(EngineConfig.h.template ${CMAKE_CURRENT_BINARY_DIR}/Generated/EngineConfig.h)
@@ -14,6 +15,10 @@ set(ENGINE_SOURCES
     Source/Core/Engine.h
     Source/Core/Engine.cpp
     Source/Core/Utility.h
+    Source/Graphics/Vulkan/VulkanGraphicsContext.h
+    Source/Graphics/Vulkan/VulkanGraphicsContext.cpp
+    Source/Graphics/Vulkan/VulkanInstance.h
+    Source/Graphics/Vulkan/VulkanInstance.cpp
     Source/Event/InputEvents.h
     Source/Event/WindowEvents.h
     Source/Input/KeyCodes.h
@@ -26,6 +31,7 @@ set(ENGINE_SOURCES
 set(TEST_SOURCES
     Tests/EngineTests.cpp
     Tests/EventTests.cpp
+    Tests/GraphicsTests.cpp
     Tests/LogTests.cpp
     Tests/WindowTests.cpp
 )
@@ -37,7 +43,8 @@ target_include_directories(${PROJECT_NAME}Lib PUBLIC
     ${CMAKE_CURRENT_BINARY_DIR}/Generated
 )
 # EnTT is public: engine users subscribe to events through entt::dispatcher
-target_link_libraries(${PROJECT_NAME}Lib PUBLIC EnTT::EnTT PRIVATE spdlog::spdlog glfw)
+target_link_libraries(${PROJECT_NAME}Lib PUBLIC EnTT::EnTT Vulkan::Headers Vulkan::volk PRIVATE spdlog::spdlog glfw)
+target_compile_definitions(${PROJECT_NAME}Lib PUBLIC VK_NO_PROTOTYPES)
 target_precompile_headers(${PROJECT_NAME}Lib PRIVATE Source/pch.h)
 
 if(MSVC)
