@@ -1,0 +1,35 @@
+Language: Cpp
+BasedOnStyle: Microsoft
+Standard: Latest
+
+# indentation
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+AccessModifierOffset: -4
+IndentCaseLabels: true
+NamespaceIndentation: None
+IndentPPDirectives: None
+
+# line breaks
+ColumnLimit: 140
+BreakBeforeBraces: Allman
+BreakTemplateDeclarations: Yes
+AlignAfterOpenBracket: DontAlign
+AlignEscapedNewlines: Left
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortBlocksOnASingleLine: Never
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortLambdasOnASingleLine: All
+AllowShortLoopsOnASingleLine: false
+
+# spacing and alignment
+PointerAlignment: Left
+SpacesBeforeTrailingComments: 2
+FixNamespaceComments: true
+MaxEmptyLinesToKeep: 1
+
+# includes are grouped by blank lines and sorted inside each group
+SortIncludes: CaseSensitive
+IncludeBlocks: Preserve
