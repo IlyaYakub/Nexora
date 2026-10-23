@@ -5,6 +5,7 @@
 
 #include "Event/InputEvents.h"
 #include "Event/WindowEvents.h"
+#include "Graphics/Vulkan/VulkanUtility.h"
 #include "Log/Log.h"
 
 using namespace Nexora;
@@ -13,61 +14,63 @@ DEFINE_LOG_CATEGORY_STATIC(LogGLFWWindow)
 
 namespace
 {
-// window user pointer stores the events queue
+
 entt::dispatcher& eventsOf(GLFWwindow* window)
 {
     return *static_cast<entt::dispatcher*>(glfwGetWindowUserPointer(window));
 }
 
-void setupCallbacks(GLFWwindow* window)
+void onError(int errorCode, const char* description)
 {
-    glfwSetWindowCloseCallback(window, [](GLFWwindow* window)  //
-        {                                                      //
-            eventsOf(window).trigger(WindowClosedEvent{});     //
-        });
-
-    glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height)  //
-        {                                                                                 //
-            eventsOf(window).trigger(WindowResizedEvent{width, height});                  //
-        });
-
-    glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/)  //
-        {                                                                                                   //
-            if (action == GLFW_RELEASE)                                                                     //
-            {                                                                                               //
-                eventsOf(window).trigger(KeyReleasedEvent{static_cast<Key>(key)});                          //
-                return;                                                                                     //
-            }
-            eventsOf(window).trigger(KeyPressedEvent{static_cast<Key>(key), action == GLFW_REPEAT});
-        });
-
-    glfwSetMouseButtonCallback(window, [](GLFWwindow* window, int button, int action, int /*mods*/)   //
-        {                                                                                             //
-            if (action == GLFW_PRESS)                                                                 //
-            {                                                                                         //
-                eventsOf(window).trigger(MouseButtonPressedEvent{static_cast<MouseButton>(button)});  //
-                return;                                                                               //
-            }
-            eventsOf(window).trigger(MouseButtonReleasedEvent{static_cast<MouseButton>(button)});
-        });
-
-    glfwSetCursorPosCallback(window, [](GLFWwindow* window, double x, double y)  //
-        {                                                                        //
-            eventsOf(window).trigger(MouseMovedEvent{x, y});                     //
-        });
-
-    glfwSetScrollCallback(window, [](GLFWwindow* window, double xOffset, double yOffset)  //
-        {                                                                                 //
-            eventsOf(window).trigger(MouseScrolledEvent{xOffset, yOffset});               //
-        });
+    NX_LOG(LogGLFWWindow, Error, "GLFW error, code: {}, description: {}", errorCode, description);
 }
-}  // namespace
+
+void onClose(GLFWwindow* window)
+{
+    eventsOf(window).trigger(WindowClosedEvent{});
+}
+
+void onFramebufferResize(GLFWwindow* window, int width, int height)
+{
+    eventsOf(window).trigger(WindowResizedEvent{width, height});
+}
+
+void onKey(GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/)
+{
+    if (action == GLFW_RELEASE)
+    {
+        eventsOf(window).trigger(KeyReleasedEvent{static_cast<Key>(key)});
+        return;
+    }
+    eventsOf(window).trigger(KeyPressedEvent{static_cast<Key>(key), action == GLFW_REPEAT});
+}
+
+void onMouseButton(GLFWwindow* window, int button, int action, int /*mods*/)
+{
+    if (action == GLFW_PRESS)
+    {
+        eventsOf(window).trigger(MouseButtonPressedEvent{static_cast<MouseButton>(button)});
+        return;
+    }
+    eventsOf(window).trigger(MouseButtonReleasedEvent{static_cast<MouseButton>(button)});
+}
+
+void onCursorMove(GLFWwindow* window, double x, double y)
+{
+    eventsOf(window).trigger(MouseMovedEvent{x, y});
+}
+
+void onScroll(GLFWwindow* window, double xOffset, double yOffset)
+{
+    eventsOf(window).trigger(MouseScrolledEvent{xOffset, yOffset});
+}
+
+}
 
 GLFWWindow::GLFWWindow(const WindowSettings& settings, entt::dispatcher& events) : m_events(events)
 {
-    glfwSetErrorCallback([](int errorCode, const char* description)  //
-        { NX_LOG(LogGLFWWindow, Error, "GLFW error, code: {}, description: {}", errorCode, description); });
-
+    // GLFW
+    glfwSetErrorCallback(onError);
     if (!glfwInit())
     {
         NX_LOG(LogGLFWWindow, Error, "Failed to initialize GLFW");
@@ -75,6 +78,7 @@ GLFWWindow::GLFWWindow(const WindowSettings& settings, entt::dispatcher& events)
     }
     m_glfwInitialized = true;
 
+    // window
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_VISIBLE, settings.visible ? GLFW_TRUE : GLFW_FALSE);
     m_window = glfwCreateWindow(settings.width, settings.height, settings.title.c_str(), nullptr, nullptr);
@@ -84,8 +88,14 @@ GLFWWindow::GLFWWindow(const WindowSettings& settings, entt::dispatcher& events)
         return;
     }
 
+    // events: the user pointer gives callbacks access to the events queue
     glfwSetWindowUserPointer(m_window, &m_events);
-    setupCallbacks(m_window);
+    glfwSetWindowCloseCallback(m_window, onClose);
+    glfwSetFramebufferSizeCallback(m_window, onFramebufferResize);
+    glfwSetKeyCallback(m_window, onKey);
+    glfwSetMouseButtonCallback(m_window, onMouseButton);
+    glfwSetCursorPosCallback(m_window, onCursorMove);
+    glfwSetScrollCallback(m_window, onScroll);
 
     NX_LOG(LogGLFWWindow, Display, "Window created: '{}' {}x{}", settings.title, settings.width, settings.height);
 }
@@ -173,7 +183,7 @@ std::vector<const char*> GLFWWindow::requiredVulkanExtensions() const
         return {};
     }
 
-    uint32_t count = 0;
+    uint32_t count          = 0;
     const char** extensions = glfwGetRequiredInstanceExtensions(&count);
     return extensions ? std::vector<const char*>(extensions, extensions + count) : std::vector<const char*>{};
 }

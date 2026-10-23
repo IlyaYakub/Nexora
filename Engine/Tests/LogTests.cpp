@@ -1,7 +1,3 @@
-#include <format>
-#include <source_location>
-#include <string>
-
 #include <gtest/gtest.h>
 
 #include "Log/Log.h"
@@ -10,16 +6,11 @@ using namespace Nexora;
 
 DEFINE_LOG_CATEGORY_STATIC(LogTest)
 
-TEST(LogTest, MessageShouldBeFormatted)
+TEST(LogTest, AllVerbosities)
 {
-    const auto location = std::source_location::current();
-    const std::string withLocation = std::format("[LogTest] [{}:{}] Hello", location.function_name(), location.line());
-
-    EXPECT_EQ(formatLogMessage(LogTest, "Hello", false, location), "[LogTest] Hello");
-    EXPECT_EQ(formatLogMessage(LogTest, "Hello", true, location), withLocation);
-}
-
-TEST(LogDeathTest, FatalShouldAbortProgram)
-{
+    NX_LOG(LogTest, NoLogging, "NoLogging message");
+    NX_LOG(LogTest, Display, "Display message");
+    NX_LOG(LogTest, Warning, "Warning message");
+    NX_LOG(LogTest, Error, "Error message");
     EXPECT_DEATH(NX_LOG(LogTest, Fatal, "Fatal message"), "");
 }

@@ -1,6 +1,7 @@
 #include "Graphics/Vulkan/VulkanCommandPool.h"
 
 #include "Graphics/Vulkan/VulkanDevice.h"
+#include "Graphics/Vulkan/VulkanUtility.h"
 
 using namespace Nexora;
 
@@ -8,8 +9,8 @@ VulkanCommandPool::VulkanCommandPool(std::shared_ptr<VulkanDevice> device, uint3
     : m_device(std::move(device))
 {
     const VkCommandPoolCreateInfo createInfo{
-        .sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
-        .flags = flags,
+        .sType            = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
+        .flags            = flags,
         .queueFamilyIndex = queueFamily,
     };
     VK_CHECK(vkCreateCommandPool(m_device->handle(), &createInfo, nullptr, &m_commandPool));

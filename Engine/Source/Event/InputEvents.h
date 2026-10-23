@@ -8,7 +8,7 @@ namespace Nexora
 struct KeyPressedEvent
 {
     Key key{Key::Unknown};
-    bool repeat{false};  // true when the key is held down
+    bool repeat{false};
 };
 
 struct KeyReleasedEvent
@@ -38,4 +38,4 @@ struct MouseScrolledEvent
     double yOffset{0.0};
 };
 
-}  // namespace Nexora
+}

@@ -23,15 +23,14 @@ public:
     const std::shared_ptr<VulkanSurface>& surface() const { return m_surface; }
     const std::shared_ptr<VulkanPhysicalDevice>& physicalDevice() const { return m_physicalDevice; }
     const std::shared_ptr<VulkanDevice>& device() const { return m_device; }
-    VulkanSwapchain& swapchain() { return *m_swapchain; }
-    const VulkanSwapchain& swapchain() const { return *m_swapchain; }
+    const std::shared_ptr<VulkanSwapchain>& swapchain() const { return m_swapchain; }
 
 private:
     std::shared_ptr<VulkanInstance> m_instance;
     std::shared_ptr<VulkanSurface> m_surface;
     std::shared_ptr<VulkanPhysicalDevice> m_physicalDevice;
     std::shared_ptr<VulkanDevice> m_device;
-    std::unique_ptr<VulkanSwapchain> m_swapchain;
+    std::shared_ptr<VulkanSwapchain> m_swapchain;
 };
 
-}  // namespace Nexora
+}

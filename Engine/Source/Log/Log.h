@@ -19,11 +19,11 @@ namespace Nexora
 
 enum class LogVerbosity : uint8_t
 {
-    NoLogging = 0,  // message is ignored
+    NoLogging = 0,
     Display,
     Warning,
     Error,
-    Fatal  // message is printed, then the program is aborted
+    Fatal
 };
 
 class LogCategory
@@ -36,7 +36,6 @@ private:
     std::string m_name;
 };
 
-// "[Category] message" or "[Category] [function:line] message"
 std::string formatLogMessage(
     const LogCategory& category, std::string_view message, bool showLocation, const std::source_location& location);
 
@@ -45,10 +44,7 @@ class Log final : public NonCopyable
 public:
     static Log& getInstance();
 
-    void log(const LogCategory& category,  //
-        LogVerbosity verbosity,            //
-        std::string_view message,          //
-        bool showLocation = false,         //
+    void log(const LogCategory& category, LogVerbosity verbosity, std::string_view message, bool showLocation = false,
         std::source_location location = std::source_location::current()) const;
 
 private:
@@ -58,7 +54,7 @@ private:
     std::unique_ptr<spdlog::logger> m_logger;
 };
 
-}  // namespace Nexora
+}
 
 #define DEFINE_LOG_CATEGORY_STATIC(categoryName) static const Nexora::LogCategory categoryName(#categoryName);
 

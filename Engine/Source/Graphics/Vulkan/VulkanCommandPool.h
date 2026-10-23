@@ -21,11 +21,11 @@ public:
     void reset();
 
     VkCommandPool handle() const { return m_commandPool; }
-    const VulkanDevice& device() const { return *m_device; }
+    const std::shared_ptr<VulkanDevice>& device() const { return m_device; }
 
 private:
     std::shared_ptr<VulkanDevice> m_device;
     VkCommandPool m_commandPool{VK_NULL_HANDLE};
 };
 
-}  // namespace Nexora
+}

@@ -22,8 +22,6 @@ struct WindowSettings
     bool vsync{true};
 };
 
-// The only window of the engine. Owns GLFW lifetime: glfwInit in constructor, glfwTerminate in destructor.
-// Input and window events are put into the events queue, they are delivered on events.update().
 class GLFWWindow final : public NonCopyable
 {
 public:
@@ -51,4 +49,4 @@ private:
     bool m_glfwInitialized{false};
 };
 
-}  // namespace Nexora
+}

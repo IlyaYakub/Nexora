@@ -3,17 +3,16 @@
 namespace Nexora
 {
 
-// Values are equal to GLFW_KEY_*, so a GLFW key converts with a simple static_cast
 enum class Key : int
 {
     Unknown = -1,
 
-    Space = 32,
+    Space      = 32,
     Apostrophe = 39,
-    Comma = 44,
-    Minus = 45,
-    Period = 46,
-    Slash = 47,
+    Comma      = 44,
+    Minus      = 45,
+    Period     = 46,
+    Slash      = 47,
 
     Num0 = 48,
     Num1,
@@ -27,7 +26,7 @@ enum class Key : int
     Num9,
 
     Semicolon = 59,
-    Equal = 61,
+    Equal     = 61,
 
     A = 65,
     B,
@@ -56,26 +55,26 @@ enum class Key : int
     Y,
     Z,
 
-    LeftBracket = 91,
-    Backslash = 92,
+    LeftBracket  = 91,
+    Backslash    = 92,
     RightBracket = 93,
-    GraveAccent = 96,
+    GraveAccent  = 96,
 
-    Escape = 256,
-    Enter = 257,
-    Tab = 258,
+    Escape    = 256,
+    Enter     = 257,
+    Tab       = 258,
     Backspace = 259,
-    Insert = 260,
-    Delete = 261,
-    Right = 262,
-    Left = 263,
-    Down = 264,
-    Up = 265,
-    PageUp = 266,
-    PageDown = 267,
-    Home = 268,
-    End = 269,
-    CapsLock = 280,
+    Insert    = 260,
+    Delete    = 261,
+    Right     = 262,
+    Left      = 263,
+    Down      = 264,
+    Up        = 265,
+    PageUp    = 266,
+    PageDown  = 267,
+    Home      = 268,
+    End       = 269,
+    CapsLock  = 280,
 
     F1 = 290,
     F2,
@@ -90,20 +89,19 @@ enum class Key : int
     F11,
     F12,
 
-    LeftShift = 340,
-    LeftControl = 341,
-    LeftAlt = 342,
-    RightShift = 344,
+    LeftShift    = 340,
+    LeftControl  = 341,
+    LeftAlt      = 342,
+    RightShift   = 344,
     RightControl = 345,
-    RightAlt = 346
+    RightAlt     = 346
 };
 
-// Values are equal to GLFW_MOUSE_BUTTON_*
 enum class MouseButton : int
 {
-    Left = 0,
-    Right = 1,
+    Left   = 0,
+    Right  = 1,
     Middle = 2
 };
 
-}  // namespace Nexora
+}

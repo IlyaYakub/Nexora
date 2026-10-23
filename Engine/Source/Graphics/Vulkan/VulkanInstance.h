@@ -30,4 +30,4 @@ private:
     VkDebugUtilsMessengerEXT m_debugMessenger{VK_NULL_HANDLE};
 };
 
-}  // namespace Nexora
+}

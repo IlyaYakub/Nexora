@@ -21,9 +21,10 @@ struct VulkanQueueFamilies
 class VulkanPhysicalDevice final : public NonCopyable
 {
 public:
-    VulkanPhysicalDevice(std::shared_ptr<VulkanInstance> instance, const VulkanSurface& surface);
+    VulkanPhysicalDevice(std::shared_ptr<VulkanInstance> instance, const std::shared_ptr<VulkanSurface>& surface);
 
     VkPhysicalDevice handle() const { return m_physicalDevice; }
+    const std::shared_ptr<VulkanInstance>& instance() const { return m_instance; }
     const VkPhysicalDeviceProperties& properties() const { return m_properties; }
     const VulkanQueueFamilies& queueFamilies() const { return m_queueFamilies; }
 
@@ -34,4 +35,4 @@ private:
     VulkanQueueFamilies m_queueFamilies;
 };
 
-}  // namespace Nexora
+}

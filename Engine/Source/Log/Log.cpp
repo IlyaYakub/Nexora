@@ -9,7 +9,8 @@ using namespace Nexora;
 
 namespace
 {
-constexpr const char* c_logPattern = "[%H:%M:%S.%e] [%^%l%$] %v";
+
+constexpr const char* LogPattern = "[%H:%M:%S.%e] [%^%l%$] %v";
 
 spdlog::level::level_enum toSpdlogLevel(LogVerbosity verbosity)
 {
@@ -22,7 +23,8 @@ spdlog::level::level_enum toSpdlogLevel(LogVerbosity verbosity)
         default: return spdlog::level::off;
     }
 }
-}  // namespace
+
+}
 
 std::string Nexora::formatLogMessage(
     const LogCategory& category, std::string_view message, bool showLocation, const std::source_location& location)
@@ -39,7 +41,7 @@ Log& Log::getInstance()
 
 Log::Log() : m_logger(std::make_unique<spdlog::logger>("console", std::make_shared<spdlog::sinks::stdout_color_sink_mt>()))
 {
-    m_logger->set_pattern(c_logPattern);
+    m_logger->set_pattern(LogPattern);
 }
 
 Log::~Log() = default;
@@ -53,7 +55,6 @@ void Log::log(
 
     if (verbosity == LogVerbosity::Fatal)
     {
-        // in Debug MSVC shows the abort dialog with "Retry" button to attach a debugger
         m_logger->flush();
         std::abort();
     }

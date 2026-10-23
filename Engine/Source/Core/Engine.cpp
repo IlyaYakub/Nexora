@@ -8,12 +8,14 @@ DEFINE_LOG_CATEGORY_STATIC(LogEngine)
 
 Engine::Engine(const WindowSettings& windowSettings)
 {
-    // the first log call creates the logger
+    // logger
     NX_LOG(LogEngine, Display, "Initializing Nexora Engine v{}", version());
 
+    // event subscriptions
     m_events.sink<WindowClosedEvent>().connect<&Engine::onWindowClosed>(*this);
     m_events.sink<WindowResizedEvent>().connect<&Engine::onWindowResized>(*this);
 
+    // window
     m_window = std::make_unique<GLFWWindow>(windowSettings, m_events);
     if (!m_window->isValid())
     {
@@ -21,7 +23,11 @@ Engine::Engine(const WindowSettings& windowSettings)
         return;
     }
 
-    m_graphicsContext = std::make_unique<VulkanGraphicsContext>(*m_window, windowSettings.vsync);
+    // graphics context
+    m_graphicsContext = std::make_shared<VulkanGraphicsContext>(*m_window, windowSettings.vsync);
+
+    // renderer
+    m_renderer = std::make_unique<VulkanRenderer>(m_graphicsContext->device(), m_graphicsContext->swapchain());
 
     NX_LOG(LogEngine, Display, "Engine initialized");
 }
@@ -43,6 +49,8 @@ void Engine::run()
     {
         m_window->pollEvents();
         m_events.update();
+
+        m_renderer->drawFrame();
     }
 }
 
@@ -62,6 +70,6 @@ void Engine::onWindowResized(const WindowResizedEvent& event)
 
     if (isInitialized() && event.width > 0 && event.height > 0)
     {
-        m_graphicsContext->swapchain().recreate({static_cast<uint32_t>(event.width), static_cast<uint32_t>(event.height)});
+        m_graphicsContext->swapchain()->recreate({static_cast<uint32_t>(event.width), static_cast<uint32_t>(event.height)});
     }
 }

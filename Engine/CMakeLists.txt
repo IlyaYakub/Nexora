@@ -23,14 +23,28 @@ set(ENGINE_SOURCES
     Source/Graphics/Vulkan/VulkanCommandPool.cpp
     Source/Graphics/Vulkan/VulkanDevice.h
     Source/Graphics/Vulkan/VulkanDevice.cpp
+    Source/Graphics/Vulkan/VulkanFence.h
+    Source/Graphics/Vulkan/VulkanFence.cpp
+    Source/Graphics/Vulkan/VulkanFrame.h
+    Source/Graphics/Vulkan/VulkanFrame.cpp
+    Source/Graphics/Vulkan/VulkanImage.h
+    Source/Graphics/Vulkan/VulkanImage.cpp
     Source/Graphics/Vulkan/VulkanInstance.h
     Source/Graphics/Vulkan/VulkanInstance.cpp
+    Source/Graphics/Vulkan/VulkanMemoryAllocator.cpp
     Source/Graphics/Vulkan/VulkanPhysicalDevice.h
     Source/Graphics/Vulkan/VulkanPhysicalDevice.cpp
+    Source/Graphics/Vulkan/VulkanRenderer.h
+    Source/Graphics/Vulkan/VulkanRenderer.cpp
+    Source/Graphics/Vulkan/VulkanSemaphore.h
+    Source/Graphics/Vulkan/VulkanSemaphore.cpp
     Source/Graphics/Vulkan/VulkanSurface.h
     Source/Graphics/Vulkan/VulkanSurface.cpp
     Source/Graphics/Vulkan/VulkanSwapchain.h
     Source/Graphics/Vulkan/VulkanSwapchain.cpp
+    Source/Graphics/Vulkan/VulkanSynchronizer.h
+    Source/Graphics/Vulkan/VulkanSynchronizer.cpp
+    Source/Graphics/Vulkan/VulkanUtility.h
     Source/Event/InputEvents.h
     Source/Event/WindowEvents.h
     Source/Input/KeyCodes.h

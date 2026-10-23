@@ -28,4 +28,4 @@ private:
     VkCommandBuffer m_commandBuffer{VK_NULL_HANDLE};
 };
 
-}  // namespace Nexora
+}

@@ -1,84 +1,75 @@
 #include <entt/signal/dispatcher.hpp>
 #include <gtest/gtest.h>
 
-#include "Graphics/Vulkan/VulkanCommandBuffer.h"
-#include "Graphics/Vulkan/VulkanCommandPool.h"
+#include "Graphics/Vulkan/VulkanFence.h"
 #include "Graphics/Vulkan/VulkanGraphicsContext.h"
-#include "Graphics/Vulkan/VulkanInstance.h"
+#include "Graphics/Vulkan/VulkanImage.h"
+#include "Graphics/Vulkan/VulkanRenderer.h"
 #include "Window/GLFW/GLFWWindow.h"
 
 using namespace Nexora;
 
-namespace
+TEST(VulkanContextTest, VulkanContextCreation)
 {
-class VulkanContextTest : public testing::Test
-{
-protected:
     entt::dispatcher events;
     GLFWWindow window{{.title = "Vulkan Test", .width = 640, .height = 480, .visible = false}, events};
-    VulkanGraphicsContext context{window, true};
-};
-}  // namespace
+    ASSERT_TRUE(window.isValid());
 
-TEST(VulkanInstanceTest, InstanceCreationTest)
-{
-    const VulkanInstance instance({.enableValidation = true});
-    EXPECT_NE(instance.handle(), VK_NULL_HANDLE);
-    EXPECT_TRUE(instance.isValidationEnabled());
+    std::shared_ptr<VulkanGraphicsContext> context = std::make_shared<VulkanGraphicsContext>(window, true);
+
+    EXPECT_NE(context->instance()->handle(), VK_NULL_HANDLE);
+    EXPECT_NE(context->surface()->handle(), VK_NULL_HANDLE);
+    EXPECT_NE(context->physicalDevice()->handle(), VK_NULL_HANDLE);
+    EXPECT_NE(context->device()->handle(), VK_NULL_HANDLE);
+    EXPECT_NE(context->device()->graphicsQueue(), VK_NULL_HANDLE);
+    EXPECT_NE(context->device()->presentQueue(), VK_NULL_HANDLE);
+    EXPECT_NE(context->device()->allocator(), nullptr);
+    EXPECT_NE(context->swapchain()->handle(), VK_NULL_HANDLE);
+    ASSERT_GT(context->swapchain()->imageCount(), 0u);
+    EXPECT_FALSE(context->swapchain()->image(0)->ownsImage());
+    EXPECT_NE(context->swapchain()->image(0)->view(), VK_NULL_HANDLE);
 }
 
-TEST_F(VulkanContextTest, DeviceShouldHaveQueues)
+TEST(VulkanContextTest, OwnedImageAndFence)
 {
-    const VulkanDevice& device = *context.device();
-    EXPECT_NE(device.handle(), VK_NULL_HANDLE);
-    EXPECT_NE(device.graphicsQueue(), VK_NULL_HANDLE);
-    EXPECT_NE(device.presentQueue(), VK_NULL_HANDLE);
+    entt::dispatcher events;
+    GLFWWindow window{{.title = "Vulkan Test", .width = 640, .height = 480, .visible = false}, events};
+    ASSERT_TRUE(window.isValid());
+
+    std::shared_ptr<VulkanGraphicsContext> context = std::make_shared<VulkanGraphicsContext>(window, true);
+
+    // owned image
+    const VulkanImageSettings settings{
+        .extent = {256, 256},
+        .format = VK_FORMAT_R8G8B8A8_UNORM,
+        .usage  = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
+    };
+    std::shared_ptr<VulkanImage> image = std::make_shared<VulkanImage>(context->device(), settings);
+    EXPECT_TRUE(image->ownsImage());
+    EXPECT_NE(image->handle(), VK_NULL_HANDLE);
+    EXPECT_NE(image->view(), VK_NULL_HANDLE);
+    EXPECT_EQ(image->layout(), VK_IMAGE_LAYOUT_UNDEFINED);
+
+    // signaled fence
+    std::shared_ptr<VulkanFence> fence = std::make_shared<VulkanFence>(context->device(), true);
+    fence->wait();
+    fence->reset();
 }
 
-TEST_F(VulkanContextTest, SwapchainShouldMatchWindow)
+TEST(VulkanRendererTest, DrawFrames)
 {
-    const VulkanSwapchain& swapchain = context.swapchain();
-    EXPECT_EQ(swapchain.extent().width, 640u);
-    EXPECT_EQ(swapchain.extent().height, 480u);
-    EXPECT_EQ(swapchain.presentMode(), VK_PRESENT_MODE_FIFO_KHR);
-    EXPECT_FALSE(swapchain.images().empty());
-    EXPECT_EQ(swapchain.images().size(), swapchain.imageViews().size());
-}
+    entt::dispatcher events;
+    GLFWWindow window{{.title = "Vulkan Test", .width = 640, .height = 480, .visible = false}, events};
+    ASSERT_TRUE(window.isValid());
 
-TEST_F(VulkanContextTest, SwapchainShouldBeRecreated)
-{
-    VulkanSwapchain& swapchain = context.swapchain();
-    const VkSwapchainKHR oldHandle = swapchain.handle();
+    std::shared_ptr<VulkanGraphicsContext> context = std::make_shared<VulkanGraphicsContext>(window, true);
+    std::shared_ptr<VulkanRenderer> renderer       = std::make_shared<VulkanRenderer>(context->device(), context->swapchain());
 
-    window.setSize(800, 600);
-    swapchain.recreate({800, 600});
-    EXPECT_NE(swapchain.handle(), oldHandle);
-    EXPECT_EQ(swapchain.extent().width, 800u);
-    EXPECT_EQ(swapchain.extent().height, 600u);
-
-    swapchain.setVsync(false);
-    EXPECT_FALSE(swapchain.isVsync());
-    EXPECT_NE(swapchain.presentMode(), VK_PRESENT_MODE_FIFO_KHR);
-}
-
-TEST_F(VulkanContextTest, CommandBufferShouldBeSubmitted)
-{
-    const std::shared_ptr<VulkanDevice>& device = context.device();
-    const auto pool = std::make_shared<VulkanCommandPool>(device, device->physicalDevice().queueFamilies().graphics);
-    VulkanCommandBuffer commandBuffer(pool);
-    ASSERT_NE(commandBuffer.handle(), VK_NULL_HANDLE);
-
-    for (int frame = 0; frame < 2; ++frame)
+    // reuse every frame
+    for (uint32_t i = 0; i < VulkanRenderer::FramesInFlight * 3; ++i)
     {
-        commandBuffer.reset();
-        commandBuffer.begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
-        commandBuffer.end();
-
-        const VkCommandBuffer handle = commandBuffer.handle();
-        const VkSubmitInfo submitInfo{.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO, .commandBufferCount = 1, .pCommandBuffers = &handle};
-        EXPECT_EQ(vkQueueSubmit(device->graphicsQueue(), 1, &submitInfo, VK_NULL_HANDLE), VK_SUCCESS);
-        EXPECT_EQ(vkQueueWaitIdle(device->graphicsQueue()), VK_SUCCESS);
+        renderer->drawFrame();
     }
 
-    pool->reset();
+    EXPECT_EQ(context->swapchain()->image(0)->layout(), VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 }

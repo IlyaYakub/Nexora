@@ -3,6 +3,7 @@
 #include <memory>
 
 #include <Volk/volk.h>
+#include <vma/vk_mem_alloc.h>
 
 #include "Core/Utility.h"
 
@@ -18,15 +19,17 @@ public:
     ~VulkanDevice();
 
     VkDevice handle() const { return m_device; }
-    const VulkanPhysicalDevice& physicalDevice() const { return *m_physicalDevice; }
+    const std::shared_ptr<VulkanPhysicalDevice>& physicalDevice() const { return m_physicalDevice; }
     VkQueue graphicsQueue() const { return m_graphicsQueue; }
     VkQueue presentQueue() const { return m_presentQueue; }
+    VmaAllocator allocator() const { return m_allocator; }
 
 private:
     std::shared_ptr<VulkanPhysicalDevice> m_physicalDevice;
     VkDevice m_device{VK_NULL_HANDLE};
     VkQueue m_graphicsQueue{VK_NULL_HANDLE};
     VkQueue m_presentQueue{VK_NULL_HANDLE};
+    VmaAllocator m_allocator{nullptr};
 };
 
-}  // namespace Nexora
+}
