@@ -1,0 +1,31 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        config: [Debug, Release]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Conan
+        run: pip install conan
+
+      - name: Detect Conan profile
+        run: conan profile detect --force
+
+      - name: Conan install
+        run: conan install Config/conanfile.txt --output-folder=Build --build=missing -s build_type=${{ matrix.config }} -s compiler.cppstd=23
+
+      - name: Configure
+        run: cmake -S . -B Build "-DCMAKE_TOOLCHAIN_FILE=Build/conan_toolchain.cmake"
+
+      - name: Build
+        run: cmake --build Build --config ${{ matrix.config }}
