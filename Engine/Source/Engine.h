@@ -1,9 +1,9 @@
 #pragma once
 
-#include <memory>
-
 #include "Core/Utility.h"
 #include "Window/IWindowManager.h"
+
+#include <memory>
 
 namespace Nexora
 {

@@ -1,11 +1,11 @@
 #pragma once
 
-#include <expected>
-#include <memory>
-
 #include "Core/Utility.h"
 #include "Window/IWindow.h"
 #include "Window/IWindowManager.h"
+
+#include <expected>
+#include <memory>
 
 struct GLFWwindow;
 

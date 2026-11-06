@@ -1,10 +1,10 @@
 #pragma once
 
-#include <expected>
-
 #include "Core/Types.h"
 #include "Window/IWindow.h"
 #include "Window/WindowId.h"
+
+#include <expected>
 
 namespace Nexora
 {

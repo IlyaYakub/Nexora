@@ -1,3 +1,7 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 # Nexora - Project Rules
 
 ## Language (apply before anything else)
@@ -12,6 +16,33 @@ Vulkan-based game engine, built incrementally. C++23, CMake, Conan. Style and st
 - Keep the repository root clean: only `CMakeLists.txt`, `README.md`, `.gitignore` (plus folders). Scripts go in `Automation/`, configs in `Config/`.
 - Format code with `Automation/format_all_files.bat` (`Config/.clang-format`).
 - Follow `.claude/skills/karpathy-guidelines/SKILL.md`.
+- Include order in every file, each group separated by a blank line (clang-format does not sort includes, `SortIncludes: false`):
+  1. In a `.cpp`, its own header first (`GLFWWindow.cpp` starts with `#include "Window/GLFW/GLFWWindow.h"`).
+  2. Project includes with `""`.
+  3. Standard and third-party includes with `<>`.
+
+## Commands
+
+Windows, MSVC 2022, Conan 2, CMake 3.25+. Everything builds into `Build/` (multi-config, binaries in `Build/bin/<Config>/`).
+
+- Full build (Conan install + configure + build): `Automation\build_debug.bat` / `Automation\build_release.bat`
+- Configure only (generate the VS solution): `Automation\generate_project_files.bat`
+- Rebuild after configuring: `cmake --build Build --config Debug`
+- Clean: `Automation\clean.bat` (deletes `Build/`)
+- All tests: `ctest --test-dir Build -C Debug --output-on-failure`
+- Single test: `Build\bin\Debug\NexoraEngineTestRunner.exe --gtest_filter=GLFWWindowManagerTest.CreatedWindowShouldBeFoundById` (or `ctest --test-dir Build -C Debug -R <regex>`)
+- CI (`.github/workflows/build.yml`) runs the same Conan/CMake/ctest steps for Debug and Release on `windows-latest`.
+
+## Architecture
+
+- `Engine/CMakeLists.txt` defines three targets: `NexoraEngineLib` (static library with all engine code), `NexoraEngine` (executable, just `main.cpp`) and `NexoraEngineTestRunner` (GoogleTest, tests in `Engine/Tests/`). New source files must be added to `ENGINE_SOURCES` by hand; new test files to the test runner list.
+- Precompiled header `Source/pch.h` is force-included into every engine `.cpp` via `setup_precompiled_headers` (`Automation/CMAKE/CMakeHelpers.cmake`). Headers still include what they use.
+- Include paths are relative to `Engine/Source` (`#include "Window/IWindow.h"`). Everything lives in `namespace Nexora`.
+- `Engine` owns the managers and the main loop; `main.cpp` creates the `Engine`, creates a window, and calls `run()`.
+- Subsystems are split into a backend-agnostic interface and a backend implementation in a subfolder (`Window/IWindowManager.h` -> `Window/GLFW/GLFWWindowManager`). Code outside the backend depends only on the interface.
+- Fallible construction uses static factories returning `std::expected<std::unique_ptr<T>, Error>` (e.g. `GLFWWindowManager::create()`), not exceptions. Windows are referred to by `WindowId`; `getWindow()` returns a non-owning pointer valid until the next `update()`.
+- Logging: declare a category with `DEFINE_LOG_CATEGORY_STATIC(LogX)` and log with `NX_LOG(LogX, Verbosity, "fmt {}", args)` (`NX_LOG_DEBUG` adds source location). Arguments use `std::format`. `Fatal` breaks into the debugger/traps. Do not call `Log::log` directly.
+- Shared helpers in `Core/`: fixed-width aliases (`uint8`, `uint32`) and `NonCopyable`.
 
 ## Workflow
 

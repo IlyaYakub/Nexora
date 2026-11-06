@@ -1,14 +1,14 @@
 #pragma once
 
+#include "Core/Types.h"
+#include "Core/Utility.h"
+
 #include <concepts>
 #include <format>
 #include <memory>
 #include <source_location>
 #include <string>
 #include <string_view>
-
-#include "Core/Types.h"
-#include "Core/Utility.h"
 
 namespace Nexora
 {

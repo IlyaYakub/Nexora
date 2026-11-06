@@ -1,8 +1,8 @@
 #pragma once
 
-#include <string>
-
 #include "Window/WindowId.h"
+
+#include <string>
 
 namespace Nexora
 {

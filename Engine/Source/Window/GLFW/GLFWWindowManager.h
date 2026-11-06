@@ -1,12 +1,12 @@
 #pragma once
 
-#include <expected>
-#include <memory>
-#include <unordered_map>
-
 #include "Core/Types.h"
 #include "Core/Utility.h"
 #include "Window/IWindowManager.h"
+
+#include <expected>
+#include <memory>
+#include <unordered_map>
 
 namespace Nexora
 {

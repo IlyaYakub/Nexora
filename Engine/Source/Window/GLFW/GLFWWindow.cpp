@@ -1,8 +1,8 @@
 #include "GLFWWindow.h"
 
-#include <GLFW/glfw3.h>
-
 #include "Log/Log.h"
+
+#include <GLFW/glfw3.h>
 
 using namespace Nexora;
 
