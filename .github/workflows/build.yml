@@ -29,3 +29,6 @@ jobs:
 
       - name: Build
         run: cmake --build Build --config ${{ matrix.config }}
+
+      - name: Test
+        run: ctest --test-dir Build -C ${{ matrix.config }} --output-on-failure
