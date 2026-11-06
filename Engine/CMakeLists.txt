@@ -16,6 +16,7 @@ set(ENGINE_SOURCES
     Source/Event/Connection.h
     Source/Event/Connection.cpp
     Source/Event/Event.h
+    Source/Event/Input.h
     Source/Log/Log.h
     Source/Log/Log.cpp
     Source/Window/WindowId.h
@@ -23,6 +24,8 @@ set(ENGINE_SOURCES
     Source/Window/IWindowManager.h
     Source/Window/GLFW/GLFWWindow.h
     Source/Window/GLFW/GLFWWindow.cpp
+    Source/Window/GLFW/GLFWWindowCallbacks.h
+    Source/Window/GLFW/GLFWWindowCallbacks.cpp
     Source/Window/GLFW/GLFWWindowManager.h
     Source/Window/GLFW/GLFWWindowManager.cpp
 )

@@ -26,11 +26,14 @@ public:
     void requestClose() override;
     FramebufferSize framebufferSize() const override;
 
+    WindowEvents& events() override;
+
 private:
     GLFWWindow(WindowId id, GLFWwindow* handle);
 
     const WindowId m_id;
     GLFWwindow* const m_handle;
+    WindowEvents m_events;
 };
 
 }  // namespace Nexora

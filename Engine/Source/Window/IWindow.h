@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Event/Event.h"
+#include "Event/Input.h"
 #include "Window/WindowId.h"
 
 #include <string>
@@ -23,6 +25,17 @@ struct FramebufferSize
     int height{0};
 };
 
+// Events are invoked from IWindowManager::update(). The window still closes after closeRequested.
+struct WindowEvents
+{
+    Event<> closeRequested;
+    Event<FramebufferSize> framebufferResized;
+    Event<KeyEvent> key;
+    Event<MouseButtonEvent> mouseButton;
+    Event<CursorPosition> cursorMoved;
+    Event<ScrollOffset> scrolled;
+};
+
 class IWindow
 {
 public:
@@ -33,6 +46,8 @@ public:
     virtual bool shouldClose() const = 0;
     virtual void requestClose() = 0;
     virtual FramebufferSize framebufferSize() const = 0;
+
+    virtual WindowEvents& events() = 0;
 };
 
 }  // namespace Nexora

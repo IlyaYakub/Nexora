@@ -1,5 +1,6 @@
 #include "GLFWWindow.h"
 
+#include "GLFWWindowCallbacks.h"
 #include "Log/Log.h"
 
 #include <GLFW/glfw3.h>
@@ -25,7 +26,10 @@ std::expected<std::unique_ptr<GLFWWindow>, WindowError> GLFWWindow::create(Windo
     return std::unique_ptr<GLFWWindow>(new GLFWWindow(id, handle));
 }
 
-GLFWWindow::GLFWWindow(WindowId id, GLFWwindow* handle) : m_id(id), m_handle(handle) {}
+GLFWWindow::GLFWWindow(WindowId id, GLFWwindow* handle) : m_id(id), m_handle(handle)
+{
+    installWindowCallbacks(m_handle, m_events);
+}
 
 GLFWWindow::~GLFWWindow()
 {
@@ -57,4 +61,9 @@ FramebufferSize GLFWWindow::framebufferSize() const
     FramebufferSize size;
     glfwGetFramebufferSize(m_handle, &size.width, &size.height);
     return size;
+}
+
+WindowEvents& GLFWWindow::events()
+{
+    return m_events;
 }
