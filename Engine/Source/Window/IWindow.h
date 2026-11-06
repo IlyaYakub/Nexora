@@ -41,10 +41,10 @@ class IWindow
 public:
     virtual ~IWindow() = default;
 
-    virtual WindowId id() const = 0;
+    virtual WindowId id() const                     = 0;
     virtual void setTitle(const std::string& title) = 0;
-    virtual bool shouldClose() const = 0;
-    virtual void requestClose() = 0;
+    virtual bool shouldClose() const                = 0;
+    virtual void requestClose()                     = 0;
     virtual FramebufferSize framebufferSize() const = 0;
 
     virtual WindowEvents& events() = 0;

@@ -11,14 +11,14 @@ namespace Nexora
 enum class InputAction : uint8
 {
     Release = 0,
-    Press = 1,
-    Repeat = 2
+    Press   = 1,
+    Repeat  = 2
 };
 
 enum class MouseButton : uint8
 {
-    Left = 0,
-    Right = 1,
+    Left   = 0,
+    Right  = 1,
     Middle = 2
 };
 
@@ -66,34 +66,34 @@ enum class KeyCode : uint16
     Y = 89,
     Z = 90,
 
-    Escape = 256,
-    Enter = 257,
-    Tab = 258,
+    Escape    = 256,
+    Enter     = 257,
+    Tab       = 258,
     Backspace = 259,
-    Right = 262,
-    Left = 263,
-    Down = 264,
-    Up = 265,
+    Right     = 262,
+    Left      = 263,
+    Down      = 264,
+    Up        = 265,
 
-    F1 = 290,
-    F2 = 291,
-    F3 = 292,
-    F4 = 293,
-    F5 = 294,
-    F6 = 295,
-    F7 = 296,
-    F8 = 297,
-    F9 = 298,
+    F1  = 290,
+    F2  = 291,
+    F3  = 292,
+    F4  = 293,
+    F5  = 294,
+    F6  = 295,
+    F7  = 296,
+    F8  = 297,
+    F9  = 298,
     F10 = 299,
     F11 = 300,
     F12 = 301,
 
-    LeftShift = 340,
-    LeftControl = 341,
-    LeftAlt = 342,
-    RightShift = 344,
+    LeftShift    = 340,
+    LeftControl  = 341,
+    LeftAlt      = 342,
+    RightShift   = 344,
     RightControl = 345,
-    RightAlt = 346
+    RightAlt     = 346
 };
 
 struct KeyEvent

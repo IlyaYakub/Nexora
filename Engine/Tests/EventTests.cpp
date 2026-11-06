@@ -42,7 +42,7 @@ TEST(EventTest, ScopedConnectionShouldDisconnectWhenDestroyed)
 TEST(EventTest, ListenerShouldBeAbleToDisconnectItselfDuringInvoke)
 {
     Event<> event;
-    int selfCalls = 0;
+    int selfCalls  = 0;
     int otherCalls = 0;
 
     ScopedConnection self;
@@ -64,7 +64,7 @@ TEST(EventTest, ListenerShouldBeAbleToDisconnectItselfDuringInvoke)
 TEST(EventTest, ListenerShouldBeAbleToDestroyEventDuringInvoke)
 {
     auto event = std::make_unique<Event<>>();
-    int calls = 0;
+    int calls  = 0;
 
     event->add(
         [&]
@@ -82,7 +82,7 @@ TEST(EventTest, ListenerShouldBeAbleToDestroyEventDuringInvoke)
 
 TEST(EventTest, ConnectionShouldBeSafeAfterEventIsDestroyed)
 {
-    auto event = std::make_unique<Event<>>();
+    auto event                  = std::make_unique<Event<>>();
     ScopedConnection connection = event->add([] {});
 
     event.reset();

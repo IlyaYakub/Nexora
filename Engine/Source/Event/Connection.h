@@ -15,7 +15,7 @@ class IEventState
 public:
     virtual ~IEventState() = default;
 
-    virtual void disconnect(uint64 listenerId) = 0;
+    virtual void disconnect(uint64 listenerId)        = 0;
     virtual bool isConnected(uint64 listenerId) const = 0;
 };
 
@@ -51,7 +51,7 @@ public:
     ScopedConnection(ScopedConnection&& other) noexcept;
     ScopedConnection& operator=(ScopedConnection&& other) noexcept;
 
-    ScopedConnection(const ScopedConnection&) = delete;
+    ScopedConnection(const ScopedConnection&)            = delete;
     ScopedConnection& operator=(const ScopedConnection&) = delete;
 
     void reset();

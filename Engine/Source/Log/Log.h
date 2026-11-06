@@ -42,10 +42,10 @@ public:
     }
 
     // !! Do not use the direct call; it's unsafe. Use the macro version with static checks !!
-    void log(const LogCategory& category,  //
-        LogVerbosity verbosity,            //
-        const std::string& message,        //
-        bool showLocation = false,         //
+    void log(const LogCategory& category,             //
+        LogVerbosity verbosity,                       //
+        const std::string& message,                   //
+        bool showLocation                   = false,  //
         const std::source_location location = std::source_location::current()) const;
 
 private:

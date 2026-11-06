@@ -4,6 +4,7 @@ project(NexoraEngine VERSION 0.1.0 LANGUAGES CXX)
 
 find_package(spdlog REQUIRED)
 find_package(glfw3 REQUIRED)
+find_package(volk REQUIRED)
 find_package(GTest REQUIRED)
 
 set(ENGINE_SOURCES
@@ -19,6 +20,9 @@ set(ENGINE_SOURCES
     Source/Event/Input.h
     Source/Log/Log.h
     Source/Log/Log.cpp
+    Source/Graphics/IGraphicsContext.h
+    Source/Graphics/Vulkan/VulkanContext.h
+    Source/Graphics/Vulkan/VulkanContext.cpp
     Source/Window/WindowId.h
     Source/Window/IWindow.h
     Source/Window/IWindowManager.h
@@ -34,7 +38,7 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/Source FILES ${ENGINE_SOURCES})
 # engine library
 add_library(${PROJECT_NAME}Lib STATIC ${ENGINE_SOURCES})
 target_include_directories(${PROJECT_NAME}Lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Source)
-target_link_libraries(${PROJECT_NAME}Lib PUBLIC spdlog::spdlog glfw)
+target_link_libraries(${PROJECT_NAME}Lib PUBLIC spdlog::spdlog glfw volk::volk)
 include(${CMAKE_SOURCE_DIR}/Automation/CMAKE/CMakeHelpers.cmake)
 setup_precompiled_headers(${PROJECT_NAME}Lib Source/pch.cpp Source/pch.h "${ENGINE_SOURCES}")
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Utility.h"
+#include "Graphics/IGraphicsContext.h"
 #include "Window/IWindowManager.h"
 
 #include <memory>
@@ -22,6 +23,7 @@ public:
 
 private:
     std::unique_ptr<IWindowManager> m_windowManager;
+    std::unique_ptr<IGraphicsContext> m_graphicsContext;
 };
 
 }  // namespace Nexora

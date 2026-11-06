@@ -21,7 +21,7 @@ public:
     virtual ~IWindowManager() = default;
 
     // Processes pending window events and destroys windows that were closed.
-    virtual void update() = 0;
+    virtual void update()                    = 0;
     virtual bool areAllWindowsClosed() const = 0;
 
     virtual std::expected<WindowId, WindowError> createWindow(const WindowSettings& settings) = 0;

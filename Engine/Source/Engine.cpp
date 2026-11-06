@@ -1,5 +1,6 @@
 #include "Engine.h"
 
+#include "Graphics/Vulkan/VulkanContext.h"
 #include "Log/Log.h"
 #include "Window/GLFW/GLFWWindowManager.h"
 
@@ -16,6 +17,14 @@ Engine::Engine()
         return;
     }
     m_windowManager = std::move(*windowManager);
+
+    auto graphicsContext = VulkanContext::create({});
+    if (!graphicsContext)
+    {
+        NX_LOG(LogEngine, Fatal, "Failed to create the graphics context");
+        return;
+    }
+    m_graphicsContext = std::move(*graphicsContext);
 }
 
 void Engine::run()
