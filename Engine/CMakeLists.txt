@@ -11,6 +11,8 @@ set(ENGINE_SOURCES
     Source/pch.cpp
     Source/Core/Types.h
     Source/Core/Utility.h
+    Source/Engine.h
+    Source/Engine.cpp
     Source/Log/Log.h
     Source/Log/Log.cpp
     Source/Window/WindowId.h
