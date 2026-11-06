@@ -13,6 +13,9 @@ set(ENGINE_SOURCES
     Source/Core/Utility.h
     Source/Engine.h
     Source/Engine.cpp
+    Source/Event/Connection.h
+    Source/Event/Connection.cpp
+    Source/Event/Event.h
     Source/Log/Log.h
     Source/Log/Log.cpp
     Source/Window/WindowId.h
@@ -38,6 +41,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}Lib)
 
 # tests
 add_executable(${PROJECT_NAME}TestRunner
+    Tests/EventTests.cpp
     Tests/LogTests.cpp
     Tests/WindowTests.cpp
 )
