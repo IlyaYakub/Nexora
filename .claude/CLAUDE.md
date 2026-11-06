@@ -16,6 +16,14 @@ Vulkan-based game engine, built incrementally. C++23, CMake, Conan. Style and st
 ## Workflow
 
 - Before writing any code, always present your plan of action first (what you will add or change, which files, the approach). Write code only after the user approves the plan.
+- Build that plan with `.claude/skills/design-before-code/SKILL.md` (simplest solution, patterns, engine fit, testability).
+
+## Testing
+
+- Test only the key functionality of a unit, not everything. Keep tests few and small.
+- Cover the main happy path and the most important failure case. Skip trivial getters, defaults, and variations that add no new information.
+- Example for the window system: create the manager, create a window and find it by id, unknown id returns null, closed window is removed. Nothing more.
+- Tests that need a display, GPU, or other environment must skip themselves (`GTEST_SKIP()`) when it is unavailable, so CI stays green.
 
 ## Git and CI
 
