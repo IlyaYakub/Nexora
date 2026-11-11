@@ -14,6 +14,8 @@ set(CMAKE_SUPPRESS_REGENERATION TRUE)
 
 include(${CMAKE_SOURCE_DIR}/Automation/CMAKE/CMakeHelpers.cmake)
 
+enable_testing()
+
 add_subdirectory(Engine)
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT NexoraEngine)
 

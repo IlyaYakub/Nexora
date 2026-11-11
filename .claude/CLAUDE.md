@@ -21,17 +21,42 @@ Reference for the simplified version: [LifeExeEngine](https://github.com/life-ex
   booleans `is/has/should`, log categories `Log<Module>`, macros `NX_` prefix. Full words, no abbreviations.
 - One main type per `.h/.cpp` pair, file name = type name. Headers declare, `.cpp` implements (except templates / header-only types).
 - Include paths relative to `Source/`: `#include "Window/IWindow.h"`. Forward declarations in headers where possible.
-- Third-party headers stay inside their backend folder (`Window/GLFW/`) and never leak into interfaces.
-- Interface + `final` implementation, dependency injection through interfaces, managers own their objects by strong-typed ids.
+- Standard headers needed by `.cpp` files go into `Source/pch.h` (force-included), not into the `.cpp`.
+  Third-party headers stay in the `.cpp` that uses them. Headers (`.h`) keep their own includes.
+- Third-party types never leak into interfaces (`.h`); only `.cpp` files use them.
+- Interface + `final` implementation, dependency injection through interfaces.
+- Managers store their objects as `std::shared_ptr<IObject>` in a `std::unordered_map` keyed by a strong-typed id
+  (`WindowId` with a `std::hash` specialization), and hand them out as `std::shared_ptr`, never as a raw pointer from `.get()`.
 - Project integer types (`uint32`, `int64`, ...), `enum class` with an explicit underlying type.
-- RAII, `std::unique_ptr` by default, no bare `new`/`delete`. Resource owners are non-copyable.
-- No exceptions: failures return `std::expected<T, Error>` and are logged.
-- Comments only explain *why*. No commented-out code.
+- RAII, `std::unique_ptr` for single ownership (e.g. `main` owning a manager), no bare `new`/`delete`. Resource owners are non-copyable.
+- Each distinct step gets its own named private method instead of an inline lambda or expression
+  (`removeClosedWindows()` rather than `std::erase_if(...)` inside `update()`).
+- No exceptions. Unrecoverable failures (the engine cannot continue, e.g. window creation) log `Fatal`, which aborts.
+  `std::expected<T, ErrorEnum>` only where the caller can actually handle the failure (e.g. a missing asset).
+- Store values in the types the consuming API takes (e.g. `int32` for GLFW sizes), so no casts are needed.
+- Comments: none in `.h` files (only the required `}  // namespace Nexora`). In `.cpp` files only step labels in the form
+  `// <lowercase step> ->` before a block of several lines (`// init GLFW ->`, `// destroy windows and shutdown GLFW ->`).
+  Short methods get no labels. No other comments, no commented-out code.
+
+## Simplicity
+
+- Write the simplest code that covers the normal use case. Do not design for edge cases nobody asked for.
+- Checks only where skipping them breaks what follows (e.g. a failed resource creation). No defensive checks for misuse.
+- No extra overloads or variants "for completeness" (const versions, convenience wrappers) until there is real code that needs them.
+- No hidden safety machinery (copies, deferred removal, reentrancy guards) for rare scenarios. Keep the obvious implementation.
 
 ## Log
 
 - Category + verbosity macros, like UE's `UE_LOG`: `NX_LOG(LogWindow, Warning, "...", args)`.
 - Warning / Error / Fatal always show the source location (file and line) of the call.
+
+## Tests
+
+- GoogleTest, `Engine/Tests/<Module>Tests.cpp`, added to `NexoraEngineTestRunner` in `Engine/CMakeLists.txt`.
+- Tests are as short as possible and check only the essentials: one behavior per test, a few lines each.
+- Short does not mean dense: one action per line, intermediate results go into named variables instead of nested calls
+  (`auto handle = event.add(...); event.remove(handle);`, not `event.remove(event.add(...));`).
+- Naming: `TEST(LogTest, ShouldAcceptOnlyLogCategory)`.
 
 ## Layout
 
