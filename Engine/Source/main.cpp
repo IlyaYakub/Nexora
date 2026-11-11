@@ -1,12 +1,19 @@
-#include "Log/Log.h"
+#include <memory>
 
-DEFINE_LOG_CATEGORY_STATIC(LogMain);
+#include "Window/GLFW/GLFWWindowManager.h"
+
+using namespace Nexora;
 
 int main()
 {
-    NX_LOG(LogMain, Display, "Nexora {}.{}", 0, 1);
-    NX_LOG(LogMain, Log, "Written to the file only");
-    NX_LOG(LogMain, Warning, "Something looks off: {}", 42);
-    NX_LOG(LogMain, Error, "Something failed");
+    // create window ->
+    const std::unique_ptr<IWindowManager> windowManager = std::make_unique<GLFWWindowManager>();
+    windowManager->createWindow(WindowSettings{});
+
+    // main loop ->
+    while (!windowManager->areAllWindowsClosed())
+    {
+        windowManager->update();
+    }
     return 0;
 }

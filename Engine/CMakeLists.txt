@@ -9,8 +9,12 @@ set(ENGINE_SOURCES
     Source/Log/Log.cpp
     Source/Event/Event.h
     Source/Window/IWindow.h
+    Source/Window/IWindowManager.h
+    Source/Window/WindowId.h
     Source/Window/GLFW/GLFWWindow.h
     Source/Window/GLFW/GLFWWindow.cpp
+    Source/Window/GLFW/GLFWWindowManager.h
+    Source/Window/GLFW/GLFWWindowManager.cpp
 )
 
 add_library(${PROJECT_NAME}Lib ${ENGINE_SOURCES})
@@ -31,6 +35,7 @@ find_package(GTest REQUIRED)
 add_executable(${PROJECT_NAME}TestRunner
     Tests/LogTests.cpp
     Tests/EventTests.cpp
+    Tests/WindowTests.cpp
 )
 target_link_libraries(${PROJECT_NAME}TestRunner PRIVATE ${PROJECT_NAME}Lib GTest::gtest_main)
 include(GoogleTest)
