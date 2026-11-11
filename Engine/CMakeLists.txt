@@ -8,6 +8,8 @@ set(ENGINE_SOURCES
     Source/Core/EngineConfig.h.in
     Source/Core/Engine.h
     Source/Core/Engine.cpp
+    Source/Core/Timer.h
+    Source/Core/Timer.cpp
     Source/Log/Log.h
     Source/Log/Log.cpp
     Source/Event/Event.h
@@ -44,6 +46,7 @@ add_executable(${PROJECT_NAME}TestRunner
     Tests/LogTests.cpp
     Tests/EventTests.cpp
     Tests/WindowTests.cpp
+    Tests/TimerTests.cpp
 )
 target_link_libraries(${PROJECT_NAME}TestRunner PRIVATE ${PROJECT_NAME}Lib GTest::gtest_main)
 include(GoogleTest)

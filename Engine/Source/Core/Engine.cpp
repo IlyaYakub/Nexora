@@ -1,6 +1,7 @@
 #include "Core/Engine.h"
 
 #include "Core/EngineConfig.h"
+#include "Core/Timer.h"
 #include "Log/Log.h"
 #include "Window/GLFW/GLFWWindowManager.h"
 
@@ -9,16 +10,16 @@ DEFINE_LOG_CATEGORY_STATIC(LogEngine);
 namespace Nexora
 {
 
-Engine::Engine() : m_windowManager(std::make_unique<GLFWWindowManager>())
+Engine::Engine() : m_windowManager(std::make_unique<GLFWWindowManager>()), m_timer(std::make_unique<Timer>())
 {
     NX_LOG(LogEngine, Display, "Nexora {}", c_engineVersion);
 
     // create main window ->
-	const WindowSettings settings{
-		.title = std::format("Nexora {}", c_engineVersion),
-		.width = 1600,
-		.height = 900,
-	};
+    const WindowSettings settings{
+        .title  = std::format("Nexora {}", c_engineVersion),
+        .width  = 1600,
+        .height = 900,
+    };
     const WindowId windowId               = m_windowManager->createWindow(settings);
     const std::shared_ptr<IWindow> window = m_windowManager->getWindowById(windowId);
     window->windowEvent().add(this, &Engine::onWindowEvent);
@@ -30,6 +31,7 @@ void Engine::run()
 {
     while (!m_windowManager->areAllWindowsClosed())
     {
+        m_timer->tick();
         m_windowManager->update();
     }
 }

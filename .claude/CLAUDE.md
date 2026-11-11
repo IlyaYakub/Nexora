@@ -30,7 +30,8 @@ Reference for the simplified version: [LifeExeEngine](https://github.com/life-ex
   (`WindowId` with a `std::hash` specialization), and hand them out as `std::shared_ptr`, never as a raw pointer from `.get()`.
 - Project integer types (`uint32`, `int64`, ...), `enum class` with an explicit underlying type.
   Every value enum starts with `Unknown`, which is also the default of fields of that type and the fallback of mappers.
-- RAII, `std::unique_ptr` for single ownership (e.g. `main` owning a manager), no bare `new`/`delete`. Resource owners are non-copyable.
+- RAII, `std::unique_ptr` for single ownership (e.g. `Engine` owning its managers and `Timer`), no bare `new`/`delete`.
+  Keep one style within a context: if a class holds its parts as `std::unique_ptr`, every new part follows. Resource owners are non-copyable.
 - Each distinct step of a method's logic gets its own named private method instead of an inline expression
   (`removeClosedWindows()` rather than `std::erase_if(...)` inside `update()`).
 - Keep headers small: do not grow a class with private helpers or static callbacks just to split code.
