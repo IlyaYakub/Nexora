@@ -14,6 +14,8 @@ set(ENGINE_SOURCES
     Source/Window/WindowId.h
     Source/Window/GLFW/GLFWWindow.h
     Source/Window/GLFW/GLFWWindow.cpp
+    Source/Window/GLFW/GLFWKeyMapper.h
+    Source/Window/GLFW/GLFWKeyMapper.cpp
     Source/Window/GLFW/GLFWWindowManager.h
     Source/Window/GLFW/GLFWWindowManager.cpp
 )
@@ -37,8 +39,9 @@ add_executable(${PROJECT_NAME}TestRunner
     Tests/LogTests.cpp
     Tests/EventTests.cpp
     Tests/WindowTests.cpp
+    Tests/GLFWKeyMapperTests.cpp
 )
-target_link_libraries(${PROJECT_NAME}TestRunner PRIVATE ${PROJECT_NAME}Lib GTest::gtest_main)
+target_link_libraries(${PROJECT_NAME}TestRunner PRIVATE ${PROJECT_NAME}Lib GTest::gtest_main glfw)
 include(GoogleTest)
 gtest_discover_tests(${PROJECT_NAME}TestRunner WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 

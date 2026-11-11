@@ -10,6 +10,7 @@ namespace Nexora
 
 enum class InputAction : uint8
 {
+    Unknown,
     Release,
     Press,
     Repeat
@@ -106,13 +107,13 @@ enum class Key : uint16
 struct KeyEventData
 {
     Key key{Key::Unknown};
-    InputAction action{InputAction::Press};
+    InputAction action{InputAction::Unknown};
 };
 
 struct MouseButtonEventData
 {
     MouseButton button{MouseButton::Unknown};
-    InputAction action{InputAction::Press};
+    InputAction action{InputAction::Unknown};
 };
 
 struct MouseMoveEventData

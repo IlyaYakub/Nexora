@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Window/IWindow.h"
+#include "Window/WindowId.h"
 
 struct GLFWwindow;
 
@@ -10,7 +11,7 @@ namespace Nexora
 class GLFWWindow final : public IWindow
 {
 public:
-    explicit GLFWWindow(const WindowSettings& settings);
+    GLFWWindow(WindowId id, const WindowSettings& settings);
     ~GLFWWindow() override;
 
     bool shouldClose() const override;
@@ -20,6 +21,7 @@ public:
     Event<const InputEvent&>& windowEvent() override;
 
 private:
+    WindowId m_id;
     GLFWwindow* m_window{nullptr};
     Event<const InputEvent&> m_windowEvent;
 };

@@ -12,7 +12,7 @@ namespace Nexora
 
 GLFWWindowManager::GLFWWindowManager()
 {
-    // init GLFW ->
+    // init ->
     if (!glfwInit())
     {
         NX_LOG(LogWindowManager, Fatal, "Failed to initialize GLFW");
@@ -21,7 +21,7 @@ GLFWWindowManager::GLFWWindowManager()
 
 GLFWWindowManager::~GLFWWindowManager()
 {
-    // destroy window and shutdown glfw ->
+    // destroy window and shutdown ->
     m_windows.clear();
     glfwTerminate();
 }
@@ -41,7 +41,7 @@ WindowId GLFWWindowManager::createWindow(const WindowSettings& settings)
 {
     const WindowId id = m_nextWindowId;
     ++m_nextWindowId.value;
-    m_windows.emplace(id, std::make_shared<GLFWWindow>(settings));
+    m_windows.emplace(id, std::make_shared<GLFWWindow>(id, settings));
     return id;
 }
 
