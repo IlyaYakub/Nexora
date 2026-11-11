@@ -45,4 +45,9 @@ int32 GLFWWindow::height() const
     return height;
 }
 
+Event<const InputEvent&>& GLFWWindow::windowEvent()
+{
+    return m_windowEvent;
+}
+
 }  // namespace Nexora

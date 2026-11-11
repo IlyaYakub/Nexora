@@ -8,6 +8,7 @@ set(ENGINE_SOURCES
     Source/Log/Log.h
     Source/Log/Log.cpp
     Source/Event/Event.h
+    Source/Event/InputEvent.h
     Source/Window/IWindow.h
     Source/Window/IWindowManager.h
     Source/Window/WindowId.h
