@@ -7,6 +7,7 @@ set(ENGINE_SOURCES
     Source/Core/Utility.h
     Source/Log/Log.h
     Source/Log/Log.cpp
+    Source/Event/Event.h
 )
 
 add_library(${PROJECT_NAME}Lib ${ENGINE_SOURCES})
@@ -25,6 +26,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}Lib)
 find_package(GTest REQUIRED)
 add_executable(${PROJECT_NAME}TestRunner
     Tests/LogTests.cpp
+    Tests/EventTests.cpp
 )
 target_link_libraries(${PROJECT_NAME}TestRunner PRIVATE ${PROJECT_NAME}Lib GTest::gtest_main)
 include(GoogleTest)
