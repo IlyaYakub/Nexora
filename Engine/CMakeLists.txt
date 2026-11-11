@@ -5,6 +5,9 @@ set(ENGINE_SOURCES
     Source/pch.cpp
     Source/Core/Types.h
     Source/Core/Utility.h
+    Source/Core/EngineConfig.h.in
+    Source/Core/Engine.h
+    Source/Core/Engine.cpp
     Source/Log/Log.h
     Source/Log/Log.cpp
     Source/Event/Event.h
@@ -20,8 +23,10 @@ set(ENGINE_SOURCES
     Source/Window/GLFW/GLFWWindowManager.cpp
 )
 
+configure_file(Source/Core/EngineConfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/Generated/Core/EngineConfig.h)
+
 add_library(${PROJECT_NAME}Lib ${ENGINE_SOURCES})
-target_include_directories(${PROJECT_NAME}Lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Source)
+target_include_directories(${PROJECT_NAME}Lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Source ${CMAKE_CURRENT_BINARY_DIR}/Generated)
 
 if(MSVC)
     target_compile_options(${PROJECT_NAME}Lib PUBLIC /W4 /permissive- /Zc:preprocessor /utf-8)
@@ -39,9 +44,8 @@ add_executable(${PROJECT_NAME}TestRunner
     Tests/LogTests.cpp
     Tests/EventTests.cpp
     Tests/WindowTests.cpp
-    Tests/GLFWKeyMapperTests.cpp
 )
-target_link_libraries(${PROJECT_NAME}TestRunner PRIVATE ${PROJECT_NAME}Lib GTest::gtest_main glfw)
+target_link_libraries(${PROJECT_NAME}TestRunner PRIVATE ${PROJECT_NAME}Lib GTest::gtest_main)
 include(GoogleTest)
 gtest_discover_tests(${PROJECT_NAME}TestRunner WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 

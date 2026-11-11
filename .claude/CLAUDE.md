@@ -20,7 +20,8 @@ Reference for the simplified version: [LifeExeEngine](https://github.com/life-ex
 - Naming: types `PascalCase`, interfaces `I` prefix (`IWindow`), methods `camelCase` verbs, fields `m_`, constants `c_`,
   booleans `is/has/should`, log categories `Log<Module>`, macros `NX_` prefix. Full words, no abbreviations.
 - One main type per `.h/.cpp` pair, file name = type name. Headers declare, `.cpp` implements (except templates / header-only types).
-- Include paths relative to `Source/`: `#include "Window/IWindow.h"`. Forward declarations in headers where possible.
+- Include paths relative to `Source/`: `#include "Window/IWindow.h"`. Forward declarations in headers where possible,
+  with the same keyword as the definition (`class IWindowManager;` next to `struct InputEvent;` is fine).
 - Standard headers needed by `.cpp` files go into `Source/pch.h` (force-included), not into the `.cpp`.
   Third-party headers stay in the `.cpp` that uses them. Headers (`.h`) keep their own includes.
 - Third-party types never leak into interfaces (`.h`); only `.cpp` files use them.
@@ -28,15 +29,26 @@ Reference for the simplified version: [LifeExeEngine](https://github.com/life-ex
 - Managers store their objects as `std::shared_ptr<IObject>` in a `std::unordered_map` keyed by a strong-typed id
   (`WindowId` with a `std::hash` specialization), and hand them out as `std::shared_ptr`, never as a raw pointer from `.get()`.
 - Project integer types (`uint32`, `int64`, ...), `enum class` with an explicit underlying type.
+  Every value enum starts with `Unknown`, which is also the default of fields of that type and the fallback of mappers.
 - RAII, `std::unique_ptr` for single ownership (e.g. `main` owning a manager), no bare `new`/`delete`. Resource owners are non-copyable.
-- Each distinct step gets its own named private method instead of an inline lambda or expression
+- Each distinct step of a method's logic gets its own named private method instead of an inline expression
   (`removeClosedWindows()` rather than `std::erase_if(...)` inside `update()`).
+- Keep headers small: do not grow a class with private helpers or static callbacks just to split code.
+  Third-party callbacks are inline lambdas where they are registered (GLFW callbacks in the window constructor),
+  working with the raw pointer from the user pointer directly. More code in `.cpp` is better than a bigger `.h`.
 - No exceptions. Unrecoverable failures (the engine cannot continue, e.g. window creation) log `Fatal`, which aborts.
   `std::expected<T, ErrorEnum>` only where the caller can actually handle the failure (e.g. a missing asset).
 - Store values in the types the consuming API takes (e.g. `int32` for GLFW sizes), so no casts are needed.
 - Comments: none in `.h` files (only the required `}  // namespace Nexora`). In `.cpp` files only step labels in the form
-  `// <lowercase step> ->` before a block of several lines (`// init GLFW ->`, `// destroy windows and shutdown GLFW ->`).
+  `// <lowercase step> ->` before a block of several lines (`// init ->`, `// destroy window and shutdown ->`).
+  Labels do not repeat what the file name already says (no `GLFW` in `GLFWWindow.cpp`).
   Short methods get no labels. No other comments, no commented-out code.
+- Empty trailing `//` keep line breaks that clang-format would otherwise join (aligned in one column by `AlignTrailingComments`):
+  - a lambda that does not fit on one line gets `//` on every line of its header and body (and after the call's
+    preceding argument, so the lambda starts on its own line); lambdas in one call are separated by an empty line;
+- A designated initializer directly in a function body is one field per line with a trailing comma and no `//`
+  (`const WindowSettings settings{` / `.width = 1600,` / `};`). Nested deeper (inside a lambda, as an argument)
+  it stays on one line: `const InputEvent event{.windowId = self->m_id, .data = data};  //`.
 
 ## Simplicity
 
@@ -44,6 +56,7 @@ Reference for the simplified version: [LifeExeEngine](https://github.com/life-ex
 - Checks only where skipping them breaks what follows (e.g. a failed resource creation). No defensive checks for misuse.
 - No extra overloads or variants "for completeness" (const versions, convenience wrappers) until there is real code that needs them.
 - No hidden safety machinery (copies, deferred removal, reentrancy guards) for rare scenarios. Keep the obvious implementation.
+- Write as if inputs are (almost) always valid: no range checks or arithmetic tricks, a plain flat `switch` for mappings.
 
 ## Log
 
@@ -54,6 +67,7 @@ Reference for the simplified version: [LifeExeEngine](https://github.com/life-ex
 
 - GoogleTest, `Engine/Tests/<Module>Tests.cpp`, added to `NexoraEngineTestRunner` in `Engine/CMakeLists.txt`.
 - Tests are as short as possible and check only the essentials: one behavior per test, a few lines each.
+  Only the normal use case, usually one test per function; no tests for unknown, unsupported or boundary inputs.
 - Short does not mean dense: one action per line, intermediate results go into named variables instead of nested calls
   (`auto handle = event.add(...); event.remove(handle);`, not `event.remove(event.add(...));`).
 - Naming: `TEST(LogTest, ShouldAcceptOnlyLogCategory)`.

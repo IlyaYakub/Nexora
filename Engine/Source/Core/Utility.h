@@ -15,6 +15,12 @@ protected:
     NonCopyable& operator=(NonCopyable&&)      = delete;
 };
 
+template <typename... Visitors>
+struct Overloaded : Visitors...
+{
+    using Visitors::operator()...;
+};
+
 }  // namespace Nexora
 
 #if defined(_MSC_VER)

@@ -1,0 +1,10 @@
+#pragma once
+
+#include <string_view>
+
+namespace Nexora
+{
+
+constexpr std::string_view c_engineVersion = "@PROJECT_VERSION@";
+
+}  // namespace Nexora

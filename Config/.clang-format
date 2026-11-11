@@ -9,6 +9,9 @@ SortIncludes: false
 AllowShortBlocksOnASingleLine: false
 AlignAfterOpenBracket: DontAlign
 AllowShortFunctionsOnASingleLine: Inline
+AlignTrailingComments:
+  Kind: Always
+  OverEmptyLines: 1
 PointerAlignment: Left
 AllowShortIfStatementsOnASingleLine: true
 SpacesBeforeTrailingComments: 2

@@ -7,7 +7,11 @@ using namespace Nexora;
 TEST(WindowTest, ShouldCreateWindowWithRequestedSize)
 {
     GLFWWindowManager windowManager;
-    const WindowSettings settings{.title = "Test", .width = 640, .height = 480};
+    const WindowSettings settings{
+        .title  = "Test",
+        .width  = 640,
+        .height = 480,
+    };
 
     const WindowId windowId               = windowManager.createWindow(settings);
     const std::shared_ptr<IWindow> window = windowManager.getWindowById(windowId);
