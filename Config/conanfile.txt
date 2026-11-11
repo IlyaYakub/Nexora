@@ -1,0 +1,8 @@
+[requires]
+spdlog/1.16.0
+glfw/3.4
+gtest/1.17.0
+
+[generators]
+CMakeDeps
+CMakeToolchain
