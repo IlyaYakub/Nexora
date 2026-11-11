@@ -8,6 +8,9 @@ set(ENGINE_SOURCES
     Source/Log/Log.h
     Source/Log/Log.cpp
     Source/Event/Event.h
+    Source/Window/IWindow.h
+    Source/Window/GLFW/GLFWWindow.h
+    Source/Window/GLFW/GLFWWindow.cpp
 )
 
 add_library(${PROJECT_NAME}Lib ${ENGINE_SOURCES})
@@ -18,7 +21,8 @@ if(MSVC)
 endif()
 
 find_package(spdlog REQUIRED)
-target_link_libraries(${PROJECT_NAME}Lib PRIVATE spdlog::spdlog)
+find_package(glfw3 REQUIRED)
+target_link_libraries(${PROJECT_NAME}Lib PRIVATE spdlog::spdlog glfw)
 
 add_executable(${PROJECT_NAME} Source/main.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}Lib)
