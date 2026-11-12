@@ -1,6 +1,7 @@
 #include "RHI/Vulkan/VulkanRHIDevice.h"
 
 #include "Log/Log.h"
+#include "RHI/Vulkan/VulkanViewport.h"
 
 #include <VkBootstrap.h>
 
@@ -91,7 +92,7 @@ VulkanRHIDevice::VulkanRHIDevice()
 
     // create device ->
     vkb::DeviceBuilder deviceBuilder{*physicalDevice};
-    const auto device = deviceBuilder.build();
+    const auto         device = deviceBuilder.build();
     if (!device)
     {
         NX_LOG(LogVulkan, Fatal, "Failed to create Vulkan device: {}", device.error().message());
@@ -111,8 +112,33 @@ VulkanRHIDevice::~VulkanRHIDevice()
     vkDestroyInstance(m_instance, nullptr);
 }
 
+std::unique_ptr<IRHIViewport> VulkanRHIDevice::createViewport(void* nativeWindowHandle, int32 width, int32 height)
+{
+    return std::make_unique<VulkanViewport>(*this, nativeWindowHandle, width, height);
+}
+
 void VulkanRHIDevice::beginFrame() {}
 
 void VulkanRHIDevice::endFrame() {}
+
+VkInstance_T* VulkanRHIDevice::instance() const
+{
+    return m_instance;
+}
+
+VkPhysicalDevice_T* VulkanRHIDevice::physicalDevice() const
+{
+    return m_physicalDevice;
+}
+
+VkDevice_T* VulkanRHIDevice::device() const
+{
+    return m_device;
+}
+
+uint32 VulkanRHIDevice::graphicsQueueFamilyIndex() const
+{
+    return m_graphicsQueueFamilyIndex;
+}
 
 }  // namespace Nexora

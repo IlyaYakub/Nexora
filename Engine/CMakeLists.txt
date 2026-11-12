@@ -24,8 +24,11 @@ set(ENGINE_SOURCES
     Source/Window/GLFW/GLFWWindowManager.h
     Source/Window/GLFW/GLFWWindowManager.cpp
     Source/RHI/IRHIDevice.h
+    Source/RHI/IRHIViewport.h
     Source/RHI/Vulkan/VulkanRHIDevice.h
     Source/RHI/Vulkan/VulkanRHIDevice.cpp
+    Source/RHI/Vulkan/VulkanViewport.h
+    Source/RHI/Vulkan/VulkanViewport.cpp
     Source/RHI/Vulkan/VulkanSurface.h
     Source/RHI/Vulkan/VulkanSurface.cpp
 )

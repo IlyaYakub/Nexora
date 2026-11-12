@@ -91,7 +91,7 @@ Reference for the simplified version: [LifeExeEngine](https://github.com/life-ex
 
 | Folder | Purpose |
 | --- | --- |
-| `Engine/Source/` | Engine sources, one folder per module (`Core/`, `Log/`, `Event/`, `Window/`) |
+| `Engine/Source/` | Engine sources, one folder per module (`Core/`, `Log/`, `Event/`, `Window/`, `RHI/`) |
 | `Automation/` | Build, clean and format scripts |
 | `Config/` | Conan file, `.clang-format` |
 
