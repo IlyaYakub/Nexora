@@ -42,6 +42,8 @@ Reference for the simplified version: [LifeExeEngine](https://github.com/life-ex
 - No exceptions. Unrecoverable failures (the engine cannot continue, e.g. window creation) log `Fatal`, which aborts.
   `std::expected<T, ErrorEnum>` only where the caller can actually handle the failure (e.g. a missing asset).
 - Store values in the types the consuming API takes (e.g. `int32` for GLFW sizes), so no casts are needed.
+- Platform-specific code lives in its own small type and file (`VulkanSurface`), under `#if defined(_WIN32)` etc.,
+  so the types using it stay platform-independent.
 - Comments: none in `.h` files (only the required `}  // namespace Nexora`). In `.cpp` files only step labels in the form
   `// <lowercase step> ->` before a block of several lines (`// init ->`, `// destroy window and shutdown ->`).
   Labels do not repeat what the file name already says (no `GLFW` in `GLFWWindow.cpp`).
