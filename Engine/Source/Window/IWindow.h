@@ -13,8 +13,8 @@ namespace Nexora
 struct WindowSettings
 {
     std::string title{"Nexora"};
-    int32 width{1280};
-    int32 height{720};
+    int32       width{1280};
+    int32       height{720};
 };
 
 class IWindow : public NonCopyable

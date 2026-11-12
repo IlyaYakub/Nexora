@@ -31,6 +31,8 @@ set(ENGINE_SOURCES
     Source/RHI/Vulkan/VulkanViewport.cpp
     Source/RHI/Vulkan/VulkanSurface.h
     Source/RHI/Vulkan/VulkanSurface.cpp
+    Source/Renderer/Renderer.h
+    Source/Renderer/Renderer.cpp
 )
 
 configure_file(Source/Core/EngineConfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/Generated/Core/EngineConfig.h)

@@ -6,7 +6,7 @@ using namespace Nexora;
 
 TEST(EventTest, ShouldInvokeListenersInSubscriptionOrder)
 {
-    Event<int32> event;
+    Event<int32>       event;
     std::vector<int32> calls;
     event.add([&](int32 value) { calls.push_back(value); });
     event.add([&](int32 value) { calls.push_back(value * 10); });
@@ -18,8 +18,8 @@ TEST(EventTest, ShouldInvokeListenersInSubscriptionOrder)
 
 TEST(EventTest, ShouldNotInvokeRemovedListener)
 {
-    Event<> event;
-    int32 calls             = 0;
+    Event<>     event;
+    int32       calls       = 0;
     EventHandle eventHandle = event.add([&] { ++calls; });
     event.remove(eventHandle);
 

@@ -54,11 +54,11 @@ private:
     struct Entry
     {
         EventHandle handle;
-        Listener listener;
+        Listener    listener;
     };
 
     std::vector<Entry> m_listeners;
-    uint64 m_nextHandleValue{1};
+    uint64             m_nextHandleValue{1};
 };
 
 }  // namespace Nexora

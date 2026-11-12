@@ -17,7 +17,7 @@ public:
     VkSurfaceKHR_T* handle() const;
 
 private:
-    VkInstance_T* m_instance{nullptr};
+    VkInstance_T*   m_instance{nullptr};
     VkSurfaceKHR_T* m_surface{nullptr};
 };
 

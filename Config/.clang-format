@@ -22,3 +22,6 @@ AlignEscapedNewlines: Left
 AlignConsecutiveAssignments: Consecutive
 BinPackParameters: OnePerLine
 AllowAllParametersOfDeclarationOnNextLine: false
+AlignConsecutiveDeclarations:
+  Enabled: true
+  AlignFunctionDeclarations: false

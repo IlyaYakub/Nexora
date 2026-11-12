@@ -22,8 +22,8 @@ public:
     Event<const InputEvent&>& windowEvent() override;
 
 private:
-    WindowId m_id;
-    GLFWwindow* m_window{nullptr};
+    WindowId                 m_id;
+    GLFWwindow*              m_window{nullptr};
     Event<const InputEvent&> m_windowEvent;
 };
 

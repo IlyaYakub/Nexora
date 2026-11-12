@@ -4,6 +4,7 @@
 #include "Core/Timer.h"
 #include "Log/Log.h"
 #include "RHI/Vulkan/VulkanRHIDevice.h"
+#include "Renderer/Renderer.h"
 #include "Window/GLFW/GLFWWindowManager.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogEngine);
@@ -14,7 +15,8 @@ namespace Nexora
 Engine::Engine()
     : m_windowManager(std::make_unique<GLFWWindowManager>()),  //
       m_timer(std::make_unique<Timer>()),                      //
-      m_rhiDevice(std::make_unique<VulkanRHIDevice>())
+      m_rhiDevice(std::make_unique<VulkanRHIDevice>()),        //
+      m_renderer(std::make_unique<Renderer>(*m_windowManager, *m_rhiDevice))
 {
     NX_LOG(LogEngine, Display, "Nexora {}", c_engineVersion);
 
@@ -24,8 +26,8 @@ Engine::Engine()
         .width  = 1600,
         .height = 900,
     };
-    const WindowId windowId               = m_windowManager->createWindow(settings);
-    const std::shared_ptr<IWindow> window = m_windowManager->getWindowById(windowId);
+    const WindowId                 windowId = m_windowManager->createWindow(settings);
+    const std::shared_ptr<IWindow> window   = m_windowManager->getWindowById(windowId);
     window->windowEvent().add(this, &Engine::onWindowEvent);
 }
 
