@@ -68,12 +68,45 @@ VulkanRHIDevice::VulkanRHIDevice()
     m_instance       = instance->instance;
     m_debugMessenger = instance->debug_messenger;
 
-    NX_LOG(LogVulkan, Display, "Vulkan instance created");
+    // select physical device ->
+    const VkPhysicalDeviceVulkan13Features features13{
+        .sType            = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES,
+        .synchronization2 = VK_TRUE,
+        .dynamicRendering = VK_TRUE,
+    };
+    vkb::PhysicalDeviceSelector selector{*instance};
+    selector
+        .set_minimum_version(1, 3)                                   //
+        .set_required_features_13(features13)                        //
+        .prefer_gpu_device_type(vkb::PreferredDeviceType::discrete)  //
+        .allow_any_gpu_device_type(false)                            //
+        .defer_surface_initialization();
+
+    const auto physicalDevice = selector.select();
+    if (!physicalDevice)
+    {
+        NX_LOG(LogVulkan, Fatal, "Failed to select discrete GPU: {}", physicalDevice.error().message());
+    }
+    m_physicalDevice = physicalDevice->physical_device;
+
+    // create device ->
+    vkb::DeviceBuilder deviceBuilder{*physicalDevice};
+    const auto device = deviceBuilder.build();
+    if (!device)
+    {
+        NX_LOG(LogVulkan, Fatal, "Failed to create Vulkan device: {}", device.error().message());
+    }
+    m_device                   = device->device;
+    m_graphicsQueue            = device->get_queue(vkb::QueueType::graphics).value();
+    m_graphicsQueueFamilyIndex = device->get_queue_index(vkb::QueueType::graphics).value();
+
+    NX_LOG(LogVulkan, Display, "Vulkan device created: {}", physicalDevice->name);
 }
 
 VulkanRHIDevice::~VulkanRHIDevice()
 {
-    // destroy debug messenger and instance ->
+    // destroy device, debug messenger and instance ->
+    vkDestroyDevice(m_device, nullptr);
     vkb::destroy_debug_utils_messenger(m_instance, m_debugMessenger);
     vkDestroyInstance(m_instance, nullptr);
 }
