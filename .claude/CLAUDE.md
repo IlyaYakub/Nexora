@@ -17,8 +17,10 @@ Reference for the simplified version: [LifeExeEngine](https://github.com/life-ex
 
 - Allman braces, 4 spaces, line width 140, `int* ptr`, `const Foo& foo`.
 - All code in `namespace Nexora`; internals in `namespace Detail`; closing brace labeled `}  // namespace Nexora`.
+  File-local helpers go into an anonymous namespace at global scope, before `namespace Nexora`, never nested inside it.
 - Naming: types `PascalCase`, interfaces `I` prefix (`IWindow`), methods `camelCase` verbs, fields `m_`, constants `c_`,
   booleans `is/has/should`, log categories `Log<Module>`, macros `NX_` prefix. Full words, no abbreviations.
+  Names say what they control, not where the value comes from (`c_isValidationEnabled`, not `c_isDebugBuild`).
 - One main type per `.h/.cpp` pair, file name = type name. Headers declare, `.cpp` implements (except templates / header-only types).
 - Include paths relative to `Source/`: `#include "Window/IWindow.h"`. Forward declarations in headers where possible,
   with the same keyword as the definition (`class IWindowManager;` next to `struct InputEvent;` is fine).
@@ -43,10 +45,18 @@ Reference for the simplified version: [LifeExeEngine](https://github.com/life-ex
 - Comments: none in `.h` files (only the required `}  // namespace Nexora`). In `.cpp` files only step labels in the form
   `// <lowercase step> ->` before a block of several lines (`// init ->`, `// destroy window and shutdown ->`).
   Labels do not repeat what the file name already says (no `GLFW` in `GLFWWindow.cpp`).
+  One label per logical step, not per statement group: configuring a builder and building it is one step
+  (`// create instance ->`), with its groups separated by an empty line.
   Short methods get no labels. No other comments, no commented-out code.
 - Empty trailing `//` keep line breaks that clang-format would otherwise join (aligned in one column by `AlignTrailingComments`):
   - a lambda that does not fit on one line gets `//` on every line of its header and body (and after the call's
     preceding argument, so the lambda starts on its own line); lambdas in one call are separated by an empty line;
+  - a method chain (builders) is one call per line, `//` after every line but the last:
+    `builder` / `.setAppName("Nexora")  //` / `.requireApiVersion(1, 3, 0);`;
+  - a constructor initializer list with more than one member is one initializer per line, `//` after every line but the last:
+    `: m_windowManager(...),  //` / `m_timer(...),  //` / `m_rhiDevice(...)`.
+- A parameter list that does not fit on one line has one parameter per line, lambdas included
+  (enforced by `BinPackParameters: OnePerLine` in `.clang-format`).
 - A designated initializer directly in a function body is one field per line with a trailing comma and no `//`
   (`const WindowSettings settings{` / `.width = 1600,` / `};`). Nested deeper (inside a lambda, as an argument)
   it stays on one line: `const InputEvent event{.windowId = self->m_id, .data = data};  //`.
@@ -63,6 +73,8 @@ Reference for the simplified version: [LifeExeEngine](https://github.com/life-ex
 
 - Category + verbosity macros, like UE's `UE_LOG`: `NX_LOG(LogWindow, Warning, "...", args)`.
 - Warning / Error / Fatal always show the source location (file and line) of the call.
+- Messages from third-party libraries (e.g. Vulkan validation) are logged at every severity, each severity mapped to a verbosity
+  in a flat `switch`.
 
 ## Tests
 

@@ -20,3 +20,5 @@ IndentCaseLabels: true
 AlwaysBreakTemplateDeclarations: Yes
 AlignEscapedNewlines: Left
 AlignConsecutiveAssignments: Consecutive
+BinPackParameters: OnePerLine
+AllowAllParametersOfDeclarationOnNextLine: false

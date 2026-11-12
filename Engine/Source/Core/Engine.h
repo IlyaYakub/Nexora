@@ -7,6 +7,7 @@
 namespace Nexora
 {
 
+class IRHIDevice;
 class IWindowManager;
 class Timer;
 struct InputEvent;
@@ -24,6 +25,7 @@ private:
 
     std::unique_ptr<IWindowManager> m_windowManager;
     std::unique_ptr<Timer> m_timer;
+    std::unique_ptr<IRHIDevice> m_rhiDevice;
 };
 
 }  // namespace Nexora

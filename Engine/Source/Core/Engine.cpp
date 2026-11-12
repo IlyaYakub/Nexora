@@ -3,6 +3,7 @@
 #include "Core/EngineConfig.h"
 #include "Core/Timer.h"
 #include "Log/Log.h"
+#include "RHI/Vulkan/VulkanRHIDevice.h"
 #include "Window/GLFW/GLFWWindowManager.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogEngine);
@@ -10,7 +11,10 @@ DEFINE_LOG_CATEGORY_STATIC(LogEngine);
 namespace Nexora
 {
 
-Engine::Engine() : m_windowManager(std::make_unique<GLFWWindowManager>()), m_timer(std::make_unique<Timer>())
+Engine::Engine()
+    : m_windowManager(std::make_unique<GLFWWindowManager>()),  //
+      m_timer(std::make_unique<Timer>()),                      //
+      m_rhiDevice(std::make_unique<VulkanRHIDevice>())
 {
     NX_LOG(LogEngine, Display, "Nexora {}", c_engineVersion);
 
