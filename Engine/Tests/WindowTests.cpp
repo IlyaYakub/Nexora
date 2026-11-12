@@ -20,6 +20,17 @@ TEST(WindowTest, ShouldCreateWindowWithRequestedSize)
     EXPECT_EQ(window->height(), 480);
 }
 
+TEST(WindowTest, ShouldNotifyWhenWindowCreated)
+{
+    GLFWWindowManager windowManager;
+    WindowId createdId;
+    windowManager.windowCreatedEvent().add([&createdId](WindowId id) { createdId = id; });
+
+    const WindowId windowId = windowManager.createWindow(WindowSettings{});
+
+    EXPECT_EQ(createdId, windowId);
+}
+
 TEST(WindowTest, ShouldGiveEachWindowUniqueId)
 {
     GLFWWindowManager windowManager;

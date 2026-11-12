@@ -17,6 +17,7 @@ public:
     bool shouldClose() const override;
     int32 width() const override;
     int32 height() const override;
+    void* nativeHandle() const override;
 
     Event<const InputEvent&>& windowEvent() override;
 

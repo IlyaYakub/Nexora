@@ -4,6 +4,8 @@
 #include "Window/GLFW/GLFWKeyMapper.h"
 
 #include <GLFW/glfw3.h>
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GLFW/glfw3native.h>
 
 DEFINE_LOG_CATEGORY_STATIC(LogWindow);
 
@@ -100,6 +102,11 @@ int32 GLFWWindow::height() const
     int32 height = 0;
     glfwGetWindowSize(m_window, nullptr, &height);
     return height;
+}
+
+void* GLFWWindow::nativeHandle() const
+{
+    return glfwGetWin32Window(m_window);
 }
 
 Event<const InputEvent&>& GLFWWindow::windowEvent()

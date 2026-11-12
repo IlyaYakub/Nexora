@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "Core/Utility.h"
+#include "Event/Event.h"
 #include "Window/IWindow.h"
 #include "Window/WindowId.h"
 
@@ -18,6 +19,8 @@ public:
     virtual bool areAllWindowsClosed() const                          = 0;
     virtual WindowId createWindow(const WindowSettings& settings)     = 0;
     virtual std::shared_ptr<IWindow> getWindowById(WindowId id) const = 0;
+
+    virtual Event<WindowId>& windowCreatedEvent() = 0;
 };
 
 }  // namespace Nexora

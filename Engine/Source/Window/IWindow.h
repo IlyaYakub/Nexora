@@ -22,9 +22,10 @@ class IWindow : public NonCopyable
 public:
     virtual ~IWindow() = default;
 
-    virtual bool shouldClose() const = 0;
-    virtual int32 width() const      = 0;
-    virtual int32 height() const     = 0;
+    virtual bool shouldClose() const   = 0;
+    virtual int32 width() const        = 0;
+    virtual int32 height() const       = 0;
+    virtual void* nativeHandle() const = 0;
 
     virtual Event<const InputEvent&>& windowEvent() = 0;
 };

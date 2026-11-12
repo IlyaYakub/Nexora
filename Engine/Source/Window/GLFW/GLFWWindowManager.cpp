@@ -42,6 +42,7 @@ WindowId GLFWWindowManager::createWindow(const WindowSettings& settings)
     const WindowId id = m_nextWindowId;
     ++m_nextWindowId.value;
     m_windows.emplace(id, std::make_shared<GLFWWindow>(id, settings));
+    m_windowCreatedEvent.invoke(id);
     return id;
 }
 
@@ -49,6 +50,11 @@ std::shared_ptr<IWindow> GLFWWindowManager::getWindowById(WindowId id) const
 {
     const auto it = m_windows.find(id);
     return it != m_windows.end() ? it->second : nullptr;
+}
+
+Event<WindowId>& GLFWWindowManager::windowCreatedEvent()
+{
+    return m_windowCreatedEvent;
 }
 
 void GLFWWindowManager::removeClosedWindows()
