@@ -1,13 +1,11 @@
 #include "RHI/Vulkan/VulkanSurface.h"
 
-#include "Log/Log.h"
+#include "RHI/Vulkan/VulkanUtility.h"
 
 #if defined(_WIN32)
 #define VK_USE_PLATFORM_WIN32_KHR
 #endif
 #include <vulkan/vulkan.h>
-
-DEFINE_LOG_CATEGORY_STATIC(LogVulkan);
 
 namespace
 {
@@ -22,10 +20,7 @@ VkSurfaceKHR createPlatformSurface(VkInstance instance, void* nativeWindowHandle
     };
 
     VkSurfaceKHR surface = VK_NULL_HANDLE;
-    if (vkCreateWin32SurfaceKHR(instance, &surfaceInfo, nullptr, &surface) != VK_SUCCESS)
-    {
-        NX_LOG(LogVulkan, Fatal, "Failed to create window surface");
-    }
+    NX_VULKAN_CHECK(vkCreateWin32SurfaceKHR(instance, &surfaceInfo, nullptr, &surface));
     return surface;
 }
 #endif

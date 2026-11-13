@@ -1,11 +1,18 @@
 #include "RHI/Vulkan/VulkanViewport.h"
 
 #include "Log/Log.h"
+#include "RHI/Vulkan/VulkanFrame.h"
 #include "RHI/Vulkan/VulkanRHIDevice.h"
+#include "RHI/Vulkan/VulkanUtility.h"
 
 #include <VkBootstrap.h>
 
-DEFINE_LOG_CATEGORY_STATIC(LogVulkan);
+namespace
+{
+
+constexpr Nexora::uint32 c_framesInFlightCount = 2;
+
+}  // namespace
 
 namespace Nexora
 {
@@ -16,21 +23,26 @@ VulkanViewport::VulkanViewport(const VulkanRHIDevice& device, void* nativeWindow
 {
     // check present support ->
     VkBool32 isPresentSupported = VK_FALSE;
-    vkGetPhysicalDeviceSurfaceSupportKHR(m_device.physicalDevice(),  //
-        m_device.graphicsQueueFamilyIndex(),                         //
-        m_surface.handle(),                                          //
-        &isPresentSupported);
+    NX_VULKAN_CHECK(vkGetPhysicalDeviceSurfaceSupportKHR(m_device.physicalDevice(),  //
+        m_device.graphicsQueueFamilyIndex(),                                         //
+        m_surface.handle(),                                                          //
+        &isPresentSupported));
     if (!isPresentSupported)
     {
         NX_LOG(LogVulkan, Fatal, "Graphics queue cannot present to the window surface");
     }
 
-    // create swapchain ->
+    // create swapchain and frames ->
     createSwapchain(width, height);
+    for (uint32 i = 0; i < c_framesInFlightCount; ++i)
+    {
+        m_frames.push_back(std::make_unique<VulkanFrame>(m_device));
+    }
 }
 
 VulkanViewport::~VulkanViewport()
 {
+    destroyRenderFinishedSemaphores();
     destroyImageViews();
     vkDestroySwapchainKHR(m_device.device(), m_swapchain, nullptr);
 }
@@ -42,7 +54,8 @@ void VulkanViewport::resize(int32 width, int32 height)
         return;
     }
 
-    vkDeviceWaitIdle(m_device.device());
+    NX_VULKAN_CHECK(vkDeviceWaitIdle(m_device.device()));
+    destroyRenderFinishedSemaphores();
     destroyImageViews();
     createSwapchain(width, height);
 }
@@ -71,6 +84,16 @@ void VulkanViewport::createSwapchain(int32 width, int32 height)
     m_swapchain  = swapchain->swapchain;
     m_images     = swapchain->get_images().value();
     m_imageViews = swapchain->get_image_views().value();
+
+    // create render finished semaphores ->
+    const VkSemaphoreCreateInfo semaphoreInfo{
+        .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO,
+    };
+    m_renderFinishedSemaphores.resize(m_images.size());
+    for (VkSemaphore_T*& semaphore : m_renderFinishedSemaphores)
+    {
+        NX_VULKAN_CHECK(vkCreateSemaphore(m_device.device(), &semaphoreInfo, nullptr, &semaphore));
+    }
 }
 
 void VulkanViewport::destroyImageViews()
@@ -80,6 +103,15 @@ void VulkanViewport::destroyImageViews()
         vkDestroyImageView(m_device.device(), imageView, nullptr);
     }
     m_imageViews.clear();
+}
+
+void VulkanViewport::destroyRenderFinishedSemaphores()
+{
+    for (VkSemaphore_T* semaphore : m_renderFinishedSemaphores)
+    {
+        vkDestroySemaphore(m_device.device(), semaphore, nullptr);
+    }
+    m_renderFinishedSemaphores.clear();
 }
 
 }  // namespace Nexora

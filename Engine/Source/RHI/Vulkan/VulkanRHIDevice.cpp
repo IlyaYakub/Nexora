@@ -1,11 +1,10 @@
 #include "RHI/Vulkan/VulkanRHIDevice.h"
 
 #include "Log/Log.h"
+#include "RHI/Vulkan/VulkanUtility.h"
 #include "RHI/Vulkan/VulkanViewport.h"
 
 #include <VkBootstrap.h>
-
-DEFINE_LOG_CATEGORY_STATIC(LogVulkan);
 
 namespace
 {
@@ -107,10 +106,7 @@ VulkanRHIDevice::VulkanRHIDevice()
         .flags            = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
         .queueFamilyIndex = m_graphicsQueueFamilyIndex,
     };
-    if (vkCreateCommandPool(m_device, &commandPoolInfo, nullptr, &m_commandPool) != VK_SUCCESS)
-    {
-        NX_LOG(LogVulkan, Fatal, "Failed to create command pool");
-    }
+    NX_VULKAN_CHECK(vkCreateCommandPool(m_device, &commandPoolInfo, nullptr, &m_commandPool));
 
     NX_LOG(LogVulkan, Display, "Vulkan device created: {}", physicalDevice->name);
 }
