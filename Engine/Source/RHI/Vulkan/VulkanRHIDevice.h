@@ -8,6 +8,7 @@ struct VkDebugUtilsMessengerEXT_T;
 struct VkPhysicalDevice_T;
 struct VkDevice_T;
 struct VkQueue_T;
+struct VkCommandPool_T;
 
 namespace Nexora
 {
@@ -27,6 +28,7 @@ public:
     VkPhysicalDevice_T* physicalDevice() const;
     VkDevice_T* device() const;
     uint32 graphicsQueueFamilyIndex() const;
+    VkCommandPool_T* commandPool() const;
 
 private:
     VkInstance_T*               m_instance{nullptr};
@@ -35,6 +37,7 @@ private:
     VkDevice_T*                 m_device{nullptr};
     VkQueue_T*                  m_graphicsQueue{nullptr};
     uint32                      m_graphicsQueueFamilyIndex{0};
+    VkCommandPool_T*            m_commandPool{nullptr};
 };
 
 }  // namespace Nexora

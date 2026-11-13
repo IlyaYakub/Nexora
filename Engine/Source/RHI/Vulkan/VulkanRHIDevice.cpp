@@ -101,12 +101,24 @@ VulkanRHIDevice::VulkanRHIDevice()
     m_graphicsQueue            = device->get_queue(vkb::QueueType::graphics).value();
     m_graphicsQueueFamilyIndex = device->get_queue_index(vkb::QueueType::graphics).value();
 
+    // create command pool ->
+    const VkCommandPoolCreateInfo commandPoolInfo{
+        .sType            = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
+        .flags            = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
+        .queueFamilyIndex = m_graphicsQueueFamilyIndex,
+    };
+    if (vkCreateCommandPool(m_device, &commandPoolInfo, nullptr, &m_commandPool) != VK_SUCCESS)
+    {
+        NX_LOG(LogVulkan, Fatal, "Failed to create command pool");
+    }
+
     NX_LOG(LogVulkan, Display, "Vulkan device created: {}", physicalDevice->name);
 }
 
 VulkanRHIDevice::~VulkanRHIDevice()
 {
-    // destroy device, debug messenger and instance ->
+    // destroy in reverse order ->
+    vkDestroyCommandPool(m_device, m_commandPool, nullptr);
     vkDestroyDevice(m_device, nullptr);
     vkb::destroy_debug_utils_messenger(m_instance, m_debugMessenger);
     vkDestroyInstance(m_instance, nullptr);
@@ -139,6 +151,11 @@ VkDevice_T* VulkanRHIDevice::device() const
 uint32 VulkanRHIDevice::graphicsQueueFamilyIndex() const
 {
     return m_graphicsQueueFamilyIndex;
+}
+
+VkCommandPool_T* VulkanRHIDevice::commandPool() const
+{
+    return m_commandPool;
 }
 
 }  // namespace Nexora
