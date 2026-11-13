@@ -2,6 +2,7 @@
 
 #include "RHI/Vulkan/VulkanFrame.h"
 #include "RHI/Vulkan/VulkanRHIDevice.h"
+#include "RHI/Vulkan/VulkanSemaphore.h"
 #include "RHI/Vulkan/VulkanSwapchain.h"
 #include "RHI/Vulkan/VulkanUtility.h"
 
@@ -32,7 +33,6 @@ VulkanViewport::VulkanViewport(const VulkanRHIDevice& device,              //
 VulkanViewport::~VulkanViewport()
 {
     NX_VULKAN_CHECK(vkDeviceWaitIdle(m_device.device()));
-    destroyRenderFinishedSemaphores();
 }
 
 void VulkanViewport::resize(int32 width, int32 height)
@@ -43,28 +43,27 @@ void VulkanViewport::resize(int32 width, int32 height)
     }
 
     NX_VULKAN_CHECK(vkDeviceWaitIdle(m_device.device()));
-    destroyRenderFinishedSemaphores();
+    m_renderFinishedSemaphores.clear();
     m_swapchain = std::make_unique<VulkanSwapchain>(m_device, m_surface.handle(), width, height, m_swapchain->handle());
     createRenderFinishedSemaphores();
 }
 
 void VulkanViewport::beginFrame()
 {
-    const VkDevice        logicalDevice           = m_device.device();
     const VulkanFrame&    frame                   = *m_frames[m_frameIndex];
     const VkCommandBuffer commandBuffer           = frame.commandBuffer();
-    const VkFence         inFlightFence           = frame.inFlightFence();
-    const VkSemaphore     imageAvailableSemaphore = frame.imageAvailableSemaphore();
+    const VulkanFence&    inFlightFence           = frame.inFlightFence();
+    const VkSemaphore     imageAvailableSemaphore = frame.imageAvailableSemaphore().handle();
 
     // acquire image ->
-    NX_VULKAN_CHECK(vkWaitForFences(logicalDevice, 1, &inFlightFence, VK_TRUE, UINT64_MAX));
+    inFlightFence.wait();
 
     m_imageIndex = m_swapchain->acquireNextImage(imageAvailableSemaphore);
     if (!m_imageIndex)
     {
         return;
     }
-    NX_VULKAN_CHECK(vkResetFences(logicalDevice, 1, &inFlightFence));
+    inFlightFence.reset();
 
     // begin command buffer ->
     const VkCommandBufferBeginInfo beginInfo{
@@ -86,9 +85,9 @@ void VulkanViewport::endFrame()
     const VkQueue         graphicsQueue           = m_device.graphicsQueue();
     const VulkanFrame&    frame                   = *m_frames[m_frameIndex];
     const VkCommandBuffer commandBuffer           = frame.commandBuffer();
-    const VkFence         inFlightFence           = frame.inFlightFence();
-    const VkSemaphore     imageAvailableSemaphore = frame.imageAvailableSemaphore();
-    const VkSemaphore     renderFinishedSemaphore = m_renderFinishedSemaphores[imageIndex];
+    const VkFence         inFlightFence           = frame.inFlightFence().handle();
+    const VkSemaphore     imageAvailableSemaphore = frame.imageAvailableSemaphore().handle();
+    const VkSemaphore     renderFinishedSemaphore = m_renderFinishedSemaphores[imageIndex]->handle();
     const VkImage         image                   = m_swapchain->images()[imageIndex];
 
     // transition image to present ->
@@ -152,27 +151,10 @@ void VulkanViewport::createFrames()
 
 void VulkanViewport::createRenderFinishedSemaphores()
 {
-    const VkDevice logicalDevice = m_device.device();
-
-    const VkSemaphoreCreateInfo semaphoreInfo{
-        .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO,
-    };
-    m_renderFinishedSemaphores.resize(m_swapchain->imageCount());
-    for (VkSemaphore_T*& semaphore : m_renderFinishedSemaphores)
+    for (uint32 i = 0; i < m_swapchain->imageCount(); ++i)
     {
-        NX_VULKAN_CHECK(vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &semaphore));
+        m_renderFinishedSemaphores.push_back(std::make_unique<VulkanSemaphore>(m_device));
     }
-}
-
-void VulkanViewport::destroyRenderFinishedSemaphores()
-{
-    const VkDevice logicalDevice = m_device.device();
-
-    for (VkSemaphore_T* semaphore : m_renderFinishedSemaphores)
-    {
-        vkDestroySemaphore(logicalDevice, semaphore, nullptr);
-    }
-    m_renderFinishedSemaphores.clear();
 }
 
 }  // namespace Nexora

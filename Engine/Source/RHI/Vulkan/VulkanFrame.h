@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Core/Utility.h"
+#include "RHI/Vulkan/VulkanFence.h"
+#include "RHI/Vulkan/VulkanSemaphore.h"
 
 struct VkCommandBuffer_T;
-struct VkFence_T;
-struct VkSemaphore_T;
 
 namespace Nexora
 {
@@ -18,15 +18,15 @@ public:
     ~VulkanFrame();
 
     // getters
-    VkCommandBuffer_T* commandBuffer() const;
-    VkFence_T*         inFlightFence() const;
-    VkSemaphore_T*     imageAvailableSemaphore() const;
+    VkCommandBuffer_T*     commandBuffer() const;
+    const VulkanFence&     inFlightFence() const;
+    const VulkanSemaphore& imageAvailableSemaphore() const;
 
 private:
     const VulkanRHIDevice& m_device;
     VkCommandBuffer_T*     m_commandBuffer{nullptr};
-    VkFence_T*             m_inFlightFence{nullptr};
-    VkSemaphore_T*         m_imageAvailableSemaphore{nullptr};
+    VulkanFence            m_inFlightFence;
+    VulkanSemaphore        m_imageAvailableSemaphore;
 };
 
 }  // namespace Nexora

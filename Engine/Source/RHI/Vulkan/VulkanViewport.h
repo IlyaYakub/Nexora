@@ -8,13 +8,12 @@
 #include "RHI/IRHIViewport.h"
 #include "RHI/Vulkan/VulkanSurface.h"
 
-struct VkSemaphore_T;
-
 namespace Nexora
 {
 
 class VulkanFrame;
 class VulkanRHIDevice;
+class VulkanSemaphore;
 class VulkanSwapchain;
 
 class VulkanViewport final : public IRHIViewport
@@ -34,15 +33,14 @@ public:
 private:
     void createFrames();
     void createRenderFinishedSemaphores();
-    void destroyRenderFinishedSemaphores();
 
-    const VulkanRHIDevice&                    m_device;
-    VulkanSurface                             m_surface;
-    std::unique_ptr<VulkanSwapchain>          m_swapchain;
-    std::vector<VkSemaphore_T*>               m_renderFinishedSemaphores;
-    std::vector<std::unique_ptr<VulkanFrame>> m_frames;
-    uint32                                    m_frameIndex{0};
-    std::optional<uint32>                     m_imageIndex;
+    const VulkanRHIDevice&                        m_device;
+    VulkanSurface                                 m_surface;
+    std::unique_ptr<VulkanSwapchain>              m_swapchain;
+    std::vector<std::unique_ptr<VulkanSemaphore>> m_renderFinishedSemaphores;
+    std::vector<std::unique_ptr<VulkanFrame>>     m_frames;
+    uint32                                        m_frameIndex{0};
+    std::optional<uint32>                         m_imageIndex;
 };
 
 }  // namespace Nexora
