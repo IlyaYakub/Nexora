@@ -24,4 +24,4 @@ BinPackParameters: OnePerLine
 AllowAllParametersOfDeclarationOnNextLine: false
 AlignConsecutiveDeclarations:
   Enabled: true
-  AlignFunctionDeclarations: false
+  AlignFunctionDeclarations: true

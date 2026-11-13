@@ -14,11 +14,11 @@ public:
     GLFWWindow(WindowId id, const WindowSettings& settings);
     ~GLFWWindow() override;
 
-    bool shouldClose() const override;
-    int32 width() const override;
-    int32 height() const override;
-    void* nativeHandle() const override;
-
+    // getters
+    bool                      shouldClose() const override;
+    int32                     width() const override;
+    int32                     height() const override;
+    void*                     nativeHandle() const override;
     Event<const InputEvent&>& windowEvent() override;
 
 private:

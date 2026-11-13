@@ -14,6 +14,7 @@ public:
     VulkanSurface(VkInstance_T* instance, void* nativeWindowHandle);
     ~VulkanSurface();
 
+    // getters
     VkSurfaceKHR_T* handle() const;
 
 private:

@@ -45,9 +45,14 @@ constexpr LogVerbosity c_compileTimeVerbosity = LogVerbosity::Log;
 class Log final : public NonCopyable
 {
 public:
+    // getters
     static Log& getInstance();
 
-    void log(const LogCategory& category, LogVerbosity verbosity, std::string_view message, const std::source_location& location) const;
+    // core
+    void log(const LogCategory&     category,   //
+        LogVerbosity                verbosity,  //
+        std::string_view            message,    //
+        const std::source_location& location) const;
 
 private:
     Log();

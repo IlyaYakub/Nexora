@@ -31,6 +31,8 @@ set(ENGINE_SOURCES
     Source/RHI/Vulkan/VulkanViewport.cpp
     Source/RHI/Vulkan/VulkanSurface.h
     Source/RHI/Vulkan/VulkanSurface.cpp
+    Source/RHI/Vulkan/VulkanSwapchain.h
+    Source/RHI/Vulkan/VulkanSwapchain.cpp
     Source/RHI/Vulkan/VulkanFrame.h
     Source/RHI/Vulkan/VulkanFrame.cpp
     Source/RHI/Vulkan/VulkanUtility.h

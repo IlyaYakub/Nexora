@@ -11,6 +11,7 @@ class IRHIViewport : public NonCopyable
 public:
     virtual ~IRHIViewport() = default;
 
+    // core
     virtual void resize(int32 width, int32 height) = 0;
 };
 

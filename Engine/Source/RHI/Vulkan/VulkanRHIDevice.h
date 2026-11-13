@@ -19,16 +19,19 @@ public:
     VulkanRHIDevice();
     ~VulkanRHIDevice() override;
 
-    std::unique_ptr<IRHIViewport> createViewport(void* nativeWindowHandle, int32 width, int32 height) override;
+    // core
+    std::unique_ptr<IRHIViewport> createViewport(void* nativeWindowHandle,  //
+        int32                                          width,               //
+        int32                                          height) override;
+    void                          beginFrame() override;
+    void                          endFrame() override;
 
-    void beginFrame() override;
-    void endFrame() override;
-
-    VkInstance_T* instance() const;
+    // getters
+    VkInstance_T*       instance() const;
     VkPhysicalDevice_T* physicalDevice() const;
-    VkDevice_T* device() const;
-    uint32 graphicsQueueFamilyIndex() const;
-    VkCommandPool_T* commandPool() const;
+    VkDevice_T*         device() const;
+    uint32              graphicsQueueFamilyIndex() const;
+    VkCommandPool_T*    commandPool() const;
 
 private:
     VkInstance_T*               m_instance{nullptr};

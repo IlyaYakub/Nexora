@@ -24,6 +24,7 @@ class Event final : public NonCopyable
 public:
     using Listener = std::function<void(Args...)>;
 
+    // core
     EventHandle add(Listener listener)
     {
         const EventHandle handle{m_nextHandleValue++};

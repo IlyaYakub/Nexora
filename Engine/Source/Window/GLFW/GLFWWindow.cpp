@@ -16,7 +16,7 @@ GLFWWindow::GLFWWindow(WindowId id, const WindowSettings& settings) : m_id(id)
 {
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
-    // create window ->
+    // create ->
     m_window = glfwCreateWindow(settings.width, settings.height, settings.title.c_str(), nullptr, nullptr);
     if (!m_window)
     {

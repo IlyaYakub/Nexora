@@ -17,9 +17,10 @@ public:
     explicit VulkanFrame(const VulkanRHIDevice& device);
     ~VulkanFrame();
 
+    // getters
     VkCommandBuffer_T* commandBuffer() const;
-    VkFence_T* inFlightFence() const;
-    VkSemaphore_T* imageAvailableSemaphore() const;
+    VkFence_T*         inFlightFence() const;
+    VkSemaphore_T*     imageAvailableSemaphore() const;
 
 private:
     const VulkanRHIDevice& m_device;

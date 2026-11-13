@@ -81,7 +81,10 @@ Log::Log() : m_impl(std::make_unique<Impl>()) {}
 
 Log::~Log() = default;
 
-void Log::log(const LogCategory& category, LogVerbosity verbosity, std::string_view message, const std::source_location& location) const
+void Log::log(const LogCategory& category,   //
+    LogVerbosity                 verbosity,  //
+    std::string_view             message,    //
+    const std::source_location&  location) const
 {
     std::string line = std::format("{}: {}: {}", category.name, toString(verbosity), message);
     if (shouldShowLocation(verbosity))

@@ -36,6 +36,10 @@ Reference for the simplified version: [LifeExeEngine](https://github.com/life-ex
   Keep one style within a context: if a class holds its parts as `std::unique_ptr`, every new part follows. Resource owners are non-copyable.
 - Each distinct step of a method's logic gets its own named private method instead of an inline expression
   (`removeClosedWindows()` rather than `std::erase_if(...)` inside `update()`).
+- A type's own resource is created inline in its constructor and released inline in its destructor: no private
+  `build()`/`init()`/`destroyX()` helpers for it. A check that is not part of the creation itself stays a private method
+  (`checkPresentSupport()`). To recreate such an object, construct a new one (passing the old handle where the API
+  reuses it, e.g. `oldSwapchain`) instead of adding a `recreate()` that repeats the constructor.
 - Keep headers small: do not grow a class with private helpers or static callbacks just to split code.
   Third-party callbacks are inline lambdas where they are registered (GLFW callbacks in the window constructor),
   working with the raw pointer from the user pointer directly. More code in `.cpp` is better than a bigger `.h`.
@@ -45,9 +49,14 @@ Reference for the simplified version: [LifeExeEngine](https://github.com/life-ex
 - A constructor or factory that takes many parameters takes a settings struct instead (`WindowSettings` for `createWindow`).
 - Platform-specific code lives in its own small type and file (`VulkanSurface`), under `#if defined(_WIN32)` etc.,
   so the types using it stay platform-independent.
-- Comments: none in `.h` files (only the required `}  // namespace Nexora`). In `.cpp` files only step labels in the form
+- Comments in `.h` files: only the required `}  // namespace Nexora` and section labels in the public part of a class.
+  After the constructors and destructor, methods are grouped as `// core` (the main functionality), then `// getters`,
+  then `// setters`; each group starts with its label, groups are separated by an empty line, empty groups are omitted.
+  Method names in a group are aligned in one column (`AlignFunctionDeclarations` in `.clang-format`).
+- In `.cpp` files only step labels in the form
   `// <lowercase step> ->` before a block of several lines (`// init ->`, `// destroy window and shutdown ->`).
-  Labels do not repeat what the file name already says (no `GLFW` in `GLFWWindow.cpp`).
+  Labels do not repeat the type or module the file is about: `// create ->` in `VulkanSwapchain.cpp`,
+  not `// create swapchain ->`; no `GLFW` in `GLFWWindow.cpp`.
   One label per logical step, not per statement group: configuring a builder and building it is one step
   (`// create instance ->`), with its groups separated by an empty line.
   Short methods get no labels. No other comments, no commented-out code.
@@ -57,8 +66,11 @@ Reference for the simplified version: [LifeExeEngine](https://github.com/life-ex
   - a method chain (builders) is one call per line, `//` after every line but the last:
     `builder` / `.setAppName("Nexora")  //` / `.requireApiVersion(1, 3, 0);`;
   - a constructor initializer list with more than one member is one initializer per line, `//` after every line but the last:
-    `: m_windowManager(...),  //` / `m_timer(...),  //` / `m_rhiDevice(...)`.
-- A parameter list that does not fit on one line has one parameter per line, lambdas included
+    `: m_windowManager(...),  //` / `m_timer(...),  //` / `m_rhiDevice(...)`;
+  - a function or constructor with 3 or more parameters (declaration and definition, `.h` included) is one parameter
+    per line, `//` after every line but the last; clang-format aligns the parameter names in one column:
+    `VulkanSwapchain(const VulkanRHIDevice& device,   //` / `VkSurfaceKHR_T*  surface,  //` / `int32  height);`.
+- Any other parameter list that does not fit on one line has one parameter per line, lambdas included
   (enforced by `BinPackParameters: OnePerLine` in `.clang-format`).
 - A designated initializer directly in a function body is one field per line with a trailing comma and no `//`
   (`const WindowSettings settings{` / `.width = 1600,` / `};`). Nested deeper (inside a lambda, as an argument)

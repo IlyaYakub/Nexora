@@ -10,8 +10,10 @@ class Timer final
 public:
     Timer();
 
+    // core
     void tick();
 
+    // getters
     float deltaSeconds() const;
     float totalSeconds() const;
 
