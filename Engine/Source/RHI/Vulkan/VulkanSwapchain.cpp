@@ -15,14 +15,14 @@ VulkanSwapchain::VulkanSwapchain(const VulkanRHIDevice& device,   //
     VkSwapchainKHR_T*                                   oldSwapchain)
     : m_device(device)
 {
+    const VkPhysicalDevice physicalDevice   = m_device.physicalDevice();
+    const VkDevice         logicalDevice    = m_device.device();
+    const uint32           queueFamilyIndex = m_device.graphicsQueueFamilyIndex();
+
     checkPresentSupport(surface);
 
     // create ->
-    vkb::SwapchainBuilder builder{m_device.physicalDevice(),  //
-        m_device.device(),                                    //
-        surface,                                              //
-        m_device.graphicsQueueFamilyIndex(),                  //
-        m_device.graphicsQueueFamilyIndex()};
+    vkb::SwapchainBuilder builder{physicalDevice, logicalDevice, surface, queueFamilyIndex, queueFamilyIndex};
     builder
         .set_desired_extent(static_cast<uint32>(width), static_cast<uint32>(height))  //
         .set_desired_present_mode(VK_PRESENT_MODE_FIFO_KHR)                           //
@@ -41,12 +41,44 @@ VulkanSwapchain::VulkanSwapchain(const VulkanRHIDevice& device,   //
 
 VulkanSwapchain::~VulkanSwapchain()
 {
+    const VkDevice logicalDevice = m_device.device();
+
     // destroy ->
     for (VkImageView_T* imageView : m_imageViews)
     {
-        vkDestroyImageView(m_device.device(), imageView, nullptr);
+        vkDestroyImageView(logicalDevice, imageView, nullptr);
     }
-    vkDestroySwapchainKHR(m_device.device(), m_swapchain, nullptr);
+    vkDestroySwapchainKHR(logicalDevice, m_swapchain, nullptr);
+}
+
+std::optional<uint32> VulkanSwapchain::acquireNextImage(VkSemaphore_T* signalSemaphore)
+{
+    uint32         imageIndex = 0;
+    const VkResult result = vkAcquireNextImageKHR(m_device.device(), m_swapchain, UINT64_MAX, signalSemaphore, VK_NULL_HANDLE, &imageIndex);
+    if (result == VK_ERROR_OUT_OF_DATE_KHR)
+    {
+        return std::nullopt;
+    }
+    NX_VULKAN_CHECK(result);
+    return imageIndex;
+}
+
+void VulkanSwapchain::present(VkQueue_T* queue, uint32 imageIndex, VkSemaphore_T* waitSemaphore)
+{
+    const VkPresentInfoKHR presentInfo{
+        .sType              = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
+        .waitSemaphoreCount = 1,
+        .pWaitSemaphores    = &waitSemaphore,
+        .swapchainCount     = 1,
+        .pSwapchains        = &m_swapchain,
+        .pImageIndices      = &imageIndex,
+    };
+    const VkResult result = vkQueuePresentKHR(queue, &presentInfo);
+    if (result == VK_ERROR_OUT_OF_DATE_KHR)
+    {
+        return;
+    }
+    NX_VULKAN_CHECK(result);
 }
 
 VkSwapchainKHR_T* VulkanSwapchain::handle() const

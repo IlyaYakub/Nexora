@@ -2,6 +2,8 @@
 
 A game engine written from scratch. Long-term goal — a Nanite-like renderer.
 C++23, CMake, Conan, MSVC. Formatting — `Config/.clang-format`, run `Automation/format_all_files.bat`.
+Warnings are errors: `/W4 /WX`, third-party headers are external (`/external:anglebrackets /external:W0`).
+Never silence a warning in engine code — fix it.
 
 ## Communication
 
@@ -36,6 +38,10 @@ Reference for the simplified version: [LifeExeEngine](https://github.com/life-ex
   Keep one style within a context: if a class holds its parts as `std::unique_ptr`, every new part follows. Resource owners are non-copyable.
 - Each distinct step of a method's logic gets its own named private method instead of an inline expression
   (`removeClosedWindows()` rather than `std::erase_if(...)` inside `update()`).
+- Gather first, then use: a method that works with values from members or getters fetches them once into named `const`
+  locals in one block at its top (`const VkDevice logicalDevice = m_device.device();`, `const VkFence inFlightFence = frame.inFlightFence();`),
+  followed by an empty line, and its steps use only those locals. Values produced by a step (an acquired image index)
+  are taken where they appear. A short method that uses each value once needs no such block.
 - A type's own resource is created inline in its constructor and released inline in its destructor: no private
   `build()`/`init()`/`destroyX()` helpers for it. A check that is not part of the creation itself stays a private method
   (`checkPresentSupport()`). To recreate such an object, construct a new one (passing the old handle where the API
@@ -67,8 +73,9 @@ Reference for the simplified version: [LifeExeEngine](https://github.com/life-ex
     `builder` / `.setAppName("Nexora")  //` / `.requireApiVersion(1, 3, 0);`;
   - a constructor initializer list with more than one member is one initializer per line, `//` after every line but the last:
     `: m_windowManager(...),  //` / `m_timer(...),  //` / `m_rhiDevice(...)`;
-  - a function or constructor with 3 or more parameters (declaration and definition, `.h` included) is one parameter
-    per line, `//` after every line but the last; clang-format aligns the parameter names in one column:
+  - a constructor with 3 or more parameters (declaration and definition, `.h` included) is one parameter
+    per line, `//` after every line but the last; clang-format aligns the parameter names in one column
+    (other methods keep their parameters on one line while they fit):
     `VulkanSwapchain(const VulkanRHIDevice& device,   //` / `VkSurfaceKHR_T*  surface,  //` / `int32  height);`.
 - Any other parameter list that does not fit on one line has one parameter per line, lambdas included
   (enforced by `BinPackParameters: OnePerLine` in `.clang-format`).

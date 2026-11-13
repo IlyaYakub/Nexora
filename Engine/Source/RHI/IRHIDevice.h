@@ -16,9 +16,7 @@ public:
     virtual ~IRHIDevice() = default;
 
     // core
-    virtual std::unique_ptr<IRHIViewport> createViewport(void* nativeWindowHandle,  //
-        int32                                                  width,               //
-        int32                                                  height) = 0;
+    virtual std::unique_ptr<IRHIViewport> createViewport(void* nativeWindowHandle, int32 width, int32 height) = 0;
 };
 
 }  // namespace Nexora

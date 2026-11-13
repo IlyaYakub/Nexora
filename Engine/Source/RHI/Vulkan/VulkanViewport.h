@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <optional>
 #include <vector>
 
 #include "Core/Types.h"
@@ -27,8 +28,11 @@ public:
 
     // core
     void resize(int32 width, int32 height) override;
+    void beginFrame() override;
+    void endFrame() override;
 
 private:
+    void createFrames();
     void createRenderFinishedSemaphores();
     void destroyRenderFinishedSemaphores();
 
@@ -37,6 +41,8 @@ private:
     std::unique_ptr<VulkanSwapchain>          m_swapchain;
     std::vector<VkSemaphore_T*>               m_renderFinishedSemaphores;
     std::vector<std::unique_ptr<VulkanFrame>> m_frames;
+    uint32                                    m_frameIndex{0};
+    std::optional<uint32>                     m_imageIndex;
 };
 
 }  // namespace Nexora

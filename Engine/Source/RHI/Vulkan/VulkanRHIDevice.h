@@ -20,16 +20,13 @@ public:
     ~VulkanRHIDevice() override;
 
     // core
-    std::unique_ptr<IRHIViewport> createViewport(void* nativeWindowHandle,  //
-        int32                                          width,               //
-        int32                                          height) override;
-    void                          beginFrame() override;
-    void                          endFrame() override;
+    std::unique_ptr<IRHIViewport> createViewport(void* nativeWindowHandle, int32 width, int32 height) override;
 
     // getters
     VkInstance_T*       instance() const;
     VkPhysicalDevice_T* physicalDevice() const;
     VkDevice_T*         device() const;
+    VkQueue_T*          graphicsQueue() const;
     uint32              graphicsQueueFamilyIndex() const;
     VkCommandPool_T*    commandPool() const;
 

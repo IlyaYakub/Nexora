@@ -20,6 +20,9 @@ public:
     Renderer(IWindowManager& windowManager, IRHIDevice& rhiDevice);
     ~Renderer();
 
+    // core
+    void render();
+
 private:
     void onWindowCreated(WindowId id);
     void onWindowEvent(const InputEvent& event);

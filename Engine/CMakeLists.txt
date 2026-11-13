@@ -46,7 +46,7 @@ add_library(${PROJECT_NAME}Lib ${ENGINE_SOURCES})
 target_include_directories(${PROJECT_NAME}Lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Source ${CMAKE_CURRENT_BINARY_DIR}/Generated)
 
 if(MSVC)
-    target_compile_options(${PROJECT_NAME}Lib PUBLIC /W4 /permissive- /Zc:preprocessor /utf-8)
+    target_compile_options(${PROJECT_NAME}Lib PUBLIC /W4 /WX /external:anglebrackets /external:W0 /permissive- /Zc:preprocessor /utf-8)
 endif()
 
 find_package(spdlog REQUIRED)

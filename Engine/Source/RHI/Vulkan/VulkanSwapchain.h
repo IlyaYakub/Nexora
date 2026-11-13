@@ -1,5 +1,6 @@
 #pragma once
 
+#include <optional>
 #include <vector>
 
 #include "Core/Types.h"
@@ -9,6 +10,8 @@ struct VkSurfaceKHR_T;
 struct VkSwapchainKHR_T;
 struct VkImage_T;
 struct VkImageView_T;
+struct VkSemaphore_T;
+struct VkQueue_T;
 
 namespace Nexora
 {
@@ -24,6 +27,10 @@ public:
         int32                              height,   //
         VkSwapchainKHR_T*                  oldSwapchain = nullptr);
     ~VulkanSwapchain();
+
+    // core
+    std::optional<uint32> acquireNextImage(VkSemaphore_T* signalSemaphore);
+    void                  present(VkQueue_T* queue, uint32 imageIndex, VkSemaphore_T* waitSemaphore);
 
     // getters
     VkSwapchainKHR_T*                  handle() const;

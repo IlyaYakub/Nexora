@@ -49,10 +49,7 @@ public:
     static Log& getInstance();
 
     // core
-    void log(const LogCategory&     category,   //
-        LogVerbosity                verbosity,  //
-        std::string_view            message,    //
-        const std::source_location& location) const;
+    void log(const LogCategory& category, LogVerbosity verbosity, std::string_view message, const std::source_location& location) const;
 
 private:
     Log();

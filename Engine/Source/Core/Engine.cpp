@@ -39,6 +39,7 @@ void Engine::run()
     {
         m_timer->tick();
         m_windowManager->update();
+        m_renderer->render();
     }
 }
 

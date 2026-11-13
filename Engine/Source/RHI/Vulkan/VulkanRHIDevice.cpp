@@ -120,9 +120,7 @@ VulkanRHIDevice::~VulkanRHIDevice()
     vkDestroyInstance(m_instance, nullptr);
 }
 
-std::unique_ptr<IRHIViewport> VulkanRHIDevice::createViewport(void* nativeWindowHandle,  //
-    int32                                                           width,               //
-    int32                                                           height)
+std::unique_ptr<IRHIViewport> VulkanRHIDevice::createViewport(void* nativeWindowHandle, int32 width, int32 height)
 {
     return std::make_unique<VulkanViewport>(*this, nativeWindowHandle, width, height);
 }
@@ -140,6 +138,11 @@ VkPhysicalDevice_T* VulkanRHIDevice::physicalDevice() const
 VkDevice_T* VulkanRHIDevice::device() const
 {
     return m_device;
+}
+
+VkQueue_T* VulkanRHIDevice::graphicsQueue() const
+{
+    return m_graphicsQueue;
 }
 
 uint32 VulkanRHIDevice::graphicsQueueFamilyIndex() const

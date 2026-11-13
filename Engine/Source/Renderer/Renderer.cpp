@@ -16,6 +16,15 @@ Renderer::Renderer(IWindowManager& windowManager, IRHIDevice& rhiDevice)
 
 Renderer::~Renderer() = default;
 
+void Renderer::render()
+{
+    for (const auto& [windowId, viewport] : m_viewports)
+    {
+        viewport->beginFrame();
+        viewport->endFrame();
+    }
+}
+
 void Renderer::onWindowCreated(WindowId id)
 {
     const std::shared_ptr<IWindow> window = m_windowManager.getWindowById(id);
