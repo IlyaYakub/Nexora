@@ -30,6 +30,8 @@ set(ENGINE_SOURCES
     Source/RHI/Vulkan/Device/VulkanDevice.cpp
     Source/RHI/Vulkan/Device/VulkanQueue.h
     Source/RHI/Vulkan/Device/VulkanQueue.cpp
+    Source/RHI/Vulkan/Sync/VulkanFence.h
+    Source/RHI/Vulkan/Sync/VulkanFence.cpp
 )
 
 configure_file(Source/Core/EngineConfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/Generated/Core/EngineConfig.h)
