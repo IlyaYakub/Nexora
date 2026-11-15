@@ -24,6 +24,8 @@ set(ENGINE_SOURCES
     Source/Window/GLFW/GLFWWindowManager.h
     Source/Window/GLFW/GLFWWindowManager.cpp
     Source/RHI/Vulkan/VulkanUtility.h
+    Source/RHI/Vulkan/Device/VulkanInstance.h
+    Source/RHI/Vulkan/Device/VulkanInstance.cpp
 )
 
 configure_file(Source/Core/EngineConfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/Generated/Core/EngineConfig.h)
