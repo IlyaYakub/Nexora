@@ -24,6 +24,7 @@ class Event final : public NonCopyable
 public:
     using Listener = std::function<void(Args...)>;
 
+    // core
     EventHandle add(Listener listener)
     {
         const EventHandle handle{m_nextHandleValue++};
@@ -54,11 +55,11 @@ private:
     struct Entry
     {
         EventHandle handle;
-        Listener listener;
+        Listener    listener;
     };
 
     std::vector<Entry> m_listeners;
-    uint64 m_nextHandleValue{1};
+    uint64             m_nextHandleValue{1};
 };
 
 }  // namespace Nexora

@@ -106,7 +106,7 @@ enum class Key : uint16
 
 struct KeyEventData
 {
-    Key key{Key::Unknown};
+    Key         key{Key::Unknown};
     InputAction action{InputAction::Unknown};
 };
 
@@ -143,7 +143,7 @@ using InputEventData =
 
 struct InputEvent
 {
-    WindowId windowId;
+    WindowId       windowId;
     InputEventData data;
 };
 
