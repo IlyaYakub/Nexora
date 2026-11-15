@@ -40,6 +40,8 @@ set(ENGINE_SOURCES
     Source/RHI/Vulkan/Command/VulkanCommandList.cpp
     Source/RHI/Vulkan/Presentation/VulkanSurface.h
     Source/RHI/Vulkan/Presentation/VulkanSurface.cpp
+    Source/RHI/Vulkan/Presentation/VulkanSwapchain.h
+    Source/RHI/Vulkan/Presentation/VulkanSwapchain.cpp
     Source/RHI/Vulkan/Resource/VulkanImage.h
     Source/RHI/Vulkan/Resource/VulkanImage.cpp
     Source/RHI/Vulkan/Sync/VulkanResourceState.h
