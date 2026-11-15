@@ -46,10 +46,6 @@ VulkanViewport::~VulkanViewport()
 
 void VulkanViewport::resize(int32 width, int32 height)
 {
-    if (width == 0 || height == 0)
-    {
-        return;
-    }
     recreateSwapchain(width, height);
 }
 

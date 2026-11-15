@@ -3,6 +3,8 @@
 #include "Core/EngineConfig.h"
 #include "Core/Timer.h"
 #include "Log/Log.h"
+#include "RHI/Vulkan/VulkanRHIDevice.h"
+#include "Renderer/Renderer.h"
 #include "Window/GLFW/GLFWWindowManager.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogEngine);
@@ -10,7 +12,11 @@ DEFINE_LOG_CATEGORY_STATIC(LogEngine);
 namespace Nexora
 {
 
-Engine::Engine() : m_windowManager(std::make_unique<GLFWWindowManager>()), m_timer(std::make_unique<Timer>())
+Engine::Engine()
+    : m_windowManager(std::make_unique<GLFWWindowManager>()),  //
+      m_timer(std::make_unique<Timer>()),                      //
+      m_rhiDevice(std::make_unique<VulkanRHIDevice>()),        //
+      m_renderer(std::make_unique<Renderer>(*m_windowManager, *m_rhiDevice))
 {
     NX_LOG(LogEngine, Display, "Nexora {}", c_engineVersion);
 
@@ -20,8 +26,8 @@ Engine::Engine() : m_windowManager(std::make_unique<GLFWWindowManager>()), m_tim
         .width  = 1600,
         .height = 900,
     };
-    const WindowId windowId               = m_windowManager->createWindow(settings);
-    const std::shared_ptr<IWindow> window = m_windowManager->getWindowById(windowId);
+    const WindowId                 windowId = m_windowManager->createWindow(settings);
+    const std::shared_ptr<IWindow> window   = m_windowManager->getWindowById(windowId);
     window->windowEvent().add(this, &Engine::onWindowEvent);
 }
 
@@ -33,6 +39,7 @@ void Engine::run()
     {
         m_timer->tick();
         m_windowManager->update();
+        m_renderer->render();
     }
 }
 
@@ -51,11 +58,6 @@ void Engine::onWindowEvent(const InputEvent& event)
                     std::to_underlying(data.action));                                                                                 //
             },                                                                                                                        //
 
-            [](const MouseMoveEventData& data)                                                                                        //
-            {                                                                                                                         //
-                NX_LOG(LogEngine, Display, "Mouse move: x={}, y={}", data.x, data.y);                                                 //
-            },                                                                                                                        //
-
             [](const MouseScrollEventData& data)                                                                                      //
             {                                                                                                                         //
                 NX_LOG(LogEngine, Display, "Mouse scroll: x={}, y={}", data.xOffset, data.yOffset);                                   //
@@ -70,6 +72,8 @@ void Engine::onWindowEvent(const InputEvent& event)
             {                                                                                                                         //
                 NX_LOG(LogEngine, Display, "Window closed");                                                                          //
             },                                                                                                                        //
+
+            [](const auto&) {},
         },
         event.data);
 }
