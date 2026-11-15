@@ -11,10 +11,10 @@ namespace Nexora
 
 VulkanCommandList::VulkanCommandList(const VulkanCommandBuffer& commandBuffer) : m_commandBuffer(commandBuffer) {}
 
-void VulkanCommandList::beginRendering(IRHITexture& texture, const std::optional<std::array<float, 4>>& clearColor)
+void VulkanCommandList::beginRendering(IRHITexture& texture, const std::optional<glm::vec4>& clearColor)
 {
-    VulkanImage&               image = static_cast<VulkanImage&>(texture);
-    const std::array<float, 4> color = clearColor.value_or(std::array<float, 4>{});
+    VulkanImage&    image = static_cast<VulkanImage&>(texture);
+    const glm::vec4 color = clearColor.value_or(glm::vec4{0.0f});
 
     VulkanSync::transitionImage(m_commandBuffer, image, VulkanResourceState::ColorAttachment);
 
@@ -24,7 +24,7 @@ void VulkanCommandList::beginRendering(IRHITexture& texture, const std::optional
         .imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
         .loadOp      = clearColor.has_value() ? VK_ATTACHMENT_LOAD_OP_CLEAR : VK_ATTACHMENT_LOAD_OP_LOAD,
         .storeOp     = VK_ATTACHMENT_STORE_OP_STORE,
-        .clearValue  = {.color = {.float32 = {color[0], color[1], color[2], color[3]}}},
+        .clearValue  = {.color = {.float32 = {color.r, color.g, color.b, color.a}}},
     };
     const VkRenderingInfo renderingInfo{
         .sType                = VK_STRUCTURE_TYPE_RENDERING_INFO,

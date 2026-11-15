@@ -1,7 +1,8 @@
 #pragma once
 
-#include <array>
 #include <optional>
+
+#include <glm/vec4.hpp>
 
 #include "Core/Utility.h"
 
@@ -16,8 +17,8 @@ public:
     virtual ~IRHICommandList() = default;
 
     // core
-    virtual void beginRendering(IRHITexture& texture, const std::optional<std::array<float, 4>>& clearColor) = 0;
-    virtual void endRendering()                                                                              = 0;
+    virtual void beginRendering(IRHITexture& texture, const std::optional<glm::vec4>& clearColor) = 0;
+    virtual void endRendering()                                                                   = 0;
 };
 
 }  // namespace Nexora

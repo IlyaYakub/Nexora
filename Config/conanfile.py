@@ -11,4 +11,5 @@ class NexoraConan(ConanFile):
         self.requires("gtest/1.17.0")
         self.requires("vulkan-loader/1.4.357.0")
         self.requires("vk-bootstrap/1.4.350")
+        self.requires("glm/1.0.1")
         self.requires("vulkan-headers/1.4.357.0", override=True)
