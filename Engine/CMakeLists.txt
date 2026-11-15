@@ -32,6 +32,8 @@ set(ENGINE_SOURCES
     Source/RHI/Vulkan/Device/VulkanQueue.cpp
     Source/RHI/Vulkan/Command/VulkanCommandPool.h
     Source/RHI/Vulkan/Command/VulkanCommandPool.cpp
+    Source/RHI/Vulkan/Command/VulkanCommandBuffer.h
+    Source/RHI/Vulkan/Command/VulkanCommandBuffer.cpp
     Source/RHI/Vulkan/Sync/VulkanFence.h
     Source/RHI/Vulkan/Sync/VulkanFence.cpp
     Source/RHI/Vulkan/Sync/VulkanSemaphore.h
