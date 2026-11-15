@@ -23,6 +23,7 @@ set(ENGINE_SOURCES
     Source/Window/GLFW/GLFWKeyMapper.cpp
     Source/Window/GLFW/GLFWWindowManager.h
     Source/Window/GLFW/GLFWWindowManager.cpp
+    Source/RHI/IRHIViewport.h
     Source/RHI/IRHICommandList.h
     Source/RHI/IRHITexture.h
     Source/RHI/Vulkan/VulkanUtility.h
@@ -42,8 +43,12 @@ set(ENGINE_SOURCES
     Source/RHI/Vulkan/Presentation/VulkanSurface.cpp
     Source/RHI/Vulkan/Presentation/VulkanSwapchain.h
     Source/RHI/Vulkan/Presentation/VulkanSwapchain.cpp
+    Source/RHI/Vulkan/Presentation/VulkanViewport.h
+    Source/RHI/Vulkan/Presentation/VulkanViewport.cpp
     Source/RHI/Vulkan/Presentation/VulkanFrame.h
     Source/RHI/Vulkan/Presentation/VulkanFrame.cpp
+    Source/RHI/Vulkan/Presentation/VulkanPresentationState.h
+    Source/RHI/Vulkan/Presentation/VulkanPresentationState.cpp
     Source/RHI/Vulkan/Resource/VulkanImage.h
     Source/RHI/Vulkan/Resource/VulkanImage.cpp
     Source/RHI/Vulkan/Sync/VulkanResourceState.h
