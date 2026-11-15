@@ -23,9 +23,12 @@ set(ENGINE_SOURCES
     Source/Window/GLFW/GLFWKeyMapper.cpp
     Source/Window/GLFW/GLFWWindowManager.h
     Source/Window/GLFW/GLFWWindowManager.cpp
+    Source/RHI/IRHIDevice.h
     Source/RHI/IRHIViewport.h
     Source/RHI/IRHICommandList.h
     Source/RHI/IRHITexture.h
+    Source/RHI/Vulkan/VulkanRHIDevice.h
+    Source/RHI/Vulkan/VulkanRHIDevice.cpp
     Source/RHI/Vulkan/VulkanUtility.h
     Source/RHI/Vulkan/Device/VulkanInstance.h
     Source/RHI/Vulkan/Device/VulkanInstance.cpp
