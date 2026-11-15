@@ -13,8 +13,8 @@ namespace Nexora
 struct WindowSettings
 {
     std::string title{"Nexora"};
-    int32 width{1280};
-    int32 height{720};
+    int32       width{1280};
+    int32       height{720};
 };
 
 class IWindow : public NonCopyable
@@ -22,11 +22,14 @@ class IWindow : public NonCopyable
 public:
     virtual ~IWindow() = default;
 
-    virtual bool shouldClose() const = 0;
-    virtual int32 width() const      = 0;
-    virtual int32 height() const     = 0;
-
-    virtual Event<const InputEvent&>& windowEvent() = 0;
+    // getters
+    virtual bool                      shouldClose() const  = 0;
+    virtual bool                      isMinimized() const  = 0;
+    virtual bool                      hasZeroSize() const  = 0;
+    virtual int32                     width() const        = 0;
+    virtual int32                     height() const       = 0;
+    virtual void*                     nativeHandle() const = 0;
+    virtual Event<const InputEvent&>& windowEvent()        = 0;
 };
 
 }  // namespace Nexora

@@ -30,6 +30,7 @@ void GLFWWindowManager::update()
 {
     glfwPollEvents();
     removeClosedWindows();
+    waitWhileAllWindowsMinimized();
 }
 
 bool GLFWWindowManager::areAllWindowsClosed() const
@@ -42,6 +43,7 @@ WindowId GLFWWindowManager::createWindow(const WindowSettings& settings)
     const WindowId id = m_nextWindowId;
     ++m_nextWindowId.value;
     m_windows.emplace(id, std::make_shared<GLFWWindow>(id, settings));
+    m_windowCreatedEvent.invoke(id);
     return id;
 }
 
@@ -51,9 +53,23 @@ std::shared_ptr<IWindow> GLFWWindowManager::getWindowById(WindowId id) const
     return it != m_windows.end() ? it->second : nullptr;
 }
 
+Event<WindowId>& GLFWWindowManager::windowCreatedEvent()
+{
+    return m_windowCreatedEvent;
+}
+
 void GLFWWindowManager::removeClosedWindows()
 {
     std::erase_if(m_windows, [](const auto& entry) { return entry.second->shouldClose(); });
+}
+
+void GLFWWindowManager::waitWhileAllWindowsMinimized() const
+{
+    while (!m_windows.empty() &&
+           std::ranges::all_of(m_windows, [](const auto& entry) { return entry.second->isMinimized() && !entry.second->shouldClose(); }))
+    {
+        glfwWaitEvents();
+    }
 }
 
 }  // namespace Nexora

@@ -14,15 +14,18 @@ public:
     GLFWWindow(WindowId id, const WindowSettings& settings);
     ~GLFWWindow() override;
 
-    bool shouldClose() const override;
-    int32 width() const override;
-    int32 height() const override;
-
+    // getters
+    bool                      shouldClose() const override;
+    bool                      isMinimized() const override;
+    bool                      hasZeroSize() const override;
+    int32                     width() const override;
+    int32                     height() const override;
+    void*                     nativeHandle() const override;
     Event<const InputEvent&>& windowEvent() override;
 
 private:
-    WindowId m_id;
-    GLFWwindow* m_window{nullptr};
+    WindowId                 m_id;
+    GLFWwindow*              m_window{nullptr};
     Event<const InputEvent&> m_windowEvent;
 };
 
