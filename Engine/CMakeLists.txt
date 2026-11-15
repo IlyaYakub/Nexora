@@ -23,6 +23,7 @@ set(ENGINE_SOURCES
     Source/Window/GLFW/GLFWKeyMapper.cpp
     Source/Window/GLFW/GLFWWindowManager.h
     Source/Window/GLFW/GLFWWindowManager.cpp
+    Source/RHI/Vulkan/VulkanUtility.h
 )
 
 configure_file(Source/Core/EngineConfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/Generated/Core/EngineConfig.h)
@@ -36,7 +37,9 @@ endif()
 
 find_package(spdlog REQUIRED)
 find_package(glfw3 REQUIRED)
-target_link_libraries(${PROJECT_NAME}Lib PRIVATE spdlog::spdlog glfw)
+find_package(VulkanLoader REQUIRED)
+find_package(vk-bootstrap REQUIRED)
+target_link_libraries(${PROJECT_NAME}Lib PRIVATE spdlog::spdlog glfw Vulkan::Loader vk-bootstrap::vk-bootstrap)
 
 add_executable(${PROJECT_NAME} Source/main.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}Lib)
