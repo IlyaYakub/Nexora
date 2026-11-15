@@ -26,6 +26,8 @@ set(ENGINE_SOURCES
     Source/RHI/Vulkan/VulkanUtility.h
     Source/RHI/Vulkan/Device/VulkanInstance.h
     Source/RHI/Vulkan/Device/VulkanInstance.cpp
+    Source/RHI/Vulkan/Device/VulkanDevice.h
+    Source/RHI/Vulkan/Device/VulkanDevice.cpp
 )
 
 configure_file(Source/Core/EngineConfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/Generated/Core/EngineConfig.h)
