@@ -27,6 +27,7 @@ set(ENGINE_SOURCES
     Source/RHI/IRHIViewport.h
     Source/RHI/IRHICommandList.h
     Source/RHI/IRHITexture.h
+    Source/RHI/IRHIShader.h
     Source/RHI/Vulkan/VulkanRHIDevice.h
     Source/RHI/Vulkan/VulkanRHIDevice.cpp
     Source/RHI/Vulkan/VulkanUtility.h
@@ -54,6 +55,8 @@ set(ENGINE_SOURCES
     Source/RHI/Vulkan/Presentation/VulkanPresentationState.cpp
     Source/RHI/Vulkan/Resource/VulkanImage.h
     Source/RHI/Vulkan/Resource/VulkanImage.cpp
+    Source/RHI/Vulkan/Resource/VulkanShader.h
+    Source/RHI/Vulkan/Resource/VulkanShader.cpp
     Source/RHI/Vulkan/Sync/VulkanResourceState.h
     Source/RHI/Vulkan/Sync/VulkanSync.h
     Source/RHI/Vulkan/Sync/VulkanSync.cpp

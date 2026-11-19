@@ -5,6 +5,7 @@
 #include "RHI/Vulkan/Device/VulkanInstance.h"
 #include "RHI/Vulkan/Device/VulkanQueue.h"
 #include "RHI/Vulkan/Presentation/VulkanViewport.h"
+#include "RHI/Vulkan/Resource/VulkanShader.h"
 
 namespace Nexora
 {
@@ -21,6 +22,11 @@ VulkanRHIDevice::~VulkanRHIDevice() = default;
 std::unique_ptr<IRHIViewport> VulkanRHIDevice::createViewport(void* nativeWindowHandle, int32 width, int32 height)
 {
     return std::make_unique<VulkanViewport>(*this, nativeWindowHandle, width, height);
+}
+
+std::unique_ptr<IRHIShader> VulkanRHIDevice::createShader(const ShaderBytecode& bytecode)
+{
+    return std::make_unique<VulkanShader>(*m_device, bytecode);
 }
 
 const VulkanInstance& VulkanRHIDevice::instance() const
