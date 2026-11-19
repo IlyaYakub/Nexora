@@ -13,4 +13,15 @@ VkFormat toVkFormat(TextureFormat format)
     return VK_FORMAT_UNDEFINED;
 }
 
+VkShaderStageFlagBits toVkShaderStage(ShaderStage stage)
+{
+    switch (stage)
+    {
+        case ShaderStage::Unknown: return VK_SHADER_STAGE_FLAG_BITS_MAX_ENUM;
+        case ShaderStage::Vertex: return VK_SHADER_STAGE_VERTEX_BIT;
+        case ShaderStage::Fragment: return VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    return VK_SHADER_STAGE_FLAG_BITS_MAX_ENUM;
+}
+
 }  // namespace Nexora::VulkanMapper

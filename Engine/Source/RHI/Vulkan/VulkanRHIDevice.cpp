@@ -4,6 +4,7 @@
 #include "RHI/Vulkan/Device/VulkanDevice.h"
 #include "RHI/Vulkan/Device/VulkanInstance.h"
 #include "RHI/Vulkan/Device/VulkanQueue.h"
+#include "RHI/Vulkan/Pipeline/VulkanGraphicsPipeline.h"
 #include "RHI/Vulkan/Presentation/VulkanViewport.h"
 #include "RHI/Vulkan/Resource/VulkanShader.h"
 
@@ -27,6 +28,11 @@ std::unique_ptr<IRHIViewport> VulkanRHIDevice::createViewport(void* nativeWindow
 std::unique_ptr<IRHIShader> VulkanRHIDevice::createShader(const ShaderBytecode& bytecode)
 {
     return std::make_unique<VulkanShader>(*m_device, bytecode);
+}
+
+std::unique_ptr<IRHIGraphicsPipeline> VulkanRHIDevice::createGraphicsPipeline(const GraphicsPipelineSettings& settings)
+{
+    return std::make_unique<VulkanGraphicsPipeline>(*m_device, settings);
 }
 
 const VulkanInstance& VulkanRHIDevice::instance() const
