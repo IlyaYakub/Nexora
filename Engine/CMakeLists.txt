@@ -28,6 +28,7 @@ set(ENGINE_SOURCES
     Source/RHI/IRHICommandList.h
     Source/RHI/IRHITexture.h
     Source/RHI/IRHIShader.h
+    Source/RHI/IShaderCompiler.h
     Source/RHI/Vulkan/VulkanRHIDevice.h
     Source/RHI/Vulkan/VulkanRHIDevice.cpp
     Source/RHI/Vulkan/VulkanUtility.h
@@ -57,6 +58,8 @@ set(ENGINE_SOURCES
     Source/RHI/Vulkan/Resource/VulkanImage.cpp
     Source/RHI/Vulkan/Resource/VulkanShader.h
     Source/RHI/Vulkan/Resource/VulkanShader.cpp
+    Source/RHI/Slang/SlangShaderCompiler.h
+    Source/RHI/Slang/SlangShaderCompiler.cpp
     Source/RHI/Vulkan/Sync/VulkanResourceState.h
     Source/RHI/Vulkan/Sync/VulkanSync.h
     Source/RHI/Vulkan/Sync/VulkanSync.cpp
@@ -85,6 +88,12 @@ find_package(glm REQUIRED)
 target_link_libraries(${PROJECT_NAME}Lib PRIVATE spdlog::spdlog glfw Vulkan::Loader vk-bootstrap::vk-bootstrap)
 target_link_libraries(${PROJECT_NAME}Lib PUBLIC glm::glm)
 
+cmake_path(CONVERT "$ENV{VULKAN_SDK}" TO_CMAKE_PATH_LIST VULKAN_SDK_DIR)
+find_path(SLANG_INCLUDE_DIR slang.h PATHS ${VULKAN_SDK_DIR}/Include/slang REQUIRED NO_DEFAULT_PATH)
+find_library(SLANG_LIBRARY slang PATHS ${VULKAN_SDK_DIR}/Lib REQUIRED NO_DEFAULT_PATH)
+target_include_directories(${PROJECT_NAME}Lib PRIVATE ${SLANG_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME}Lib PRIVATE ${SLANG_LIBRARY})
+
 add_executable(${PROJECT_NAME} Source/main.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}Lib)
 
@@ -94,8 +103,10 @@ add_executable(${PROJECT_NAME}TestRunner
     Tests/EventTests.cpp
     Tests/WindowTests.cpp
     Tests/TimerTests.cpp
+    Tests/ShaderCompilerTests.cpp
 )
 target_link_libraries(${PROJECT_NAME}TestRunner PRIVATE ${PROJECT_NAME}Lib GTest::gtest_main)
+target_compile_definitions(${PROJECT_NAME}TestRunner PRIVATE NX_TEST_SHADER_DIRECTORY="${CMAKE_CURRENT_SOURCE_DIR}/Tests/Shaders")
 include(GoogleTest)
 gtest_discover_tests(${PROJECT_NAME}TestRunner WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
