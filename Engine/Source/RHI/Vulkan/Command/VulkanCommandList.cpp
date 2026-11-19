@@ -13,8 +13,8 @@ VulkanCommandList::VulkanCommandList(const VulkanCommandBuffer& commandBuffer) :
 
 void VulkanCommandList::beginRendering(IRHITexture& texture, const std::optional<glm::vec4>& clearColor)
 {
-    VulkanImage&    image = static_cast<VulkanImage&>(texture);
-    const glm::vec4 color = clearColor.value_or(glm::vec4{0.0f});
+    auto&      image = static_cast<VulkanImage&>(texture);
+    const auto color = clearColor.value_or(glm::vec4{0.0f, 0.0f, 0.0f, 1.0f});
 
     VulkanSync::transitionImage(m_commandBuffer, image, VulkanResourceState::ColorAttachment);
 
@@ -22,7 +22,7 @@ void VulkanCommandList::beginRendering(IRHITexture& texture, const std::optional
         .sType       = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO,
         .imageView   = image.view(),
         .imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-        .loadOp      = clearColor.has_value() ? VK_ATTACHMENT_LOAD_OP_CLEAR : VK_ATTACHMENT_LOAD_OP_LOAD,
+        .loadOp      = VK_ATTACHMENT_LOAD_OP_CLEAR,
         .storeOp     = VK_ATTACHMENT_STORE_OP_STORE,
         .clearValue  = {.color = {.float32 = {color.r, color.g, color.b, color.a}}},
     };

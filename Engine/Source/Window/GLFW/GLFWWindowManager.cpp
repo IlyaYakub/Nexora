@@ -40,7 +40,7 @@ bool GLFWWindowManager::areAllWindowsClosed() const
 
 WindowId GLFWWindowManager::createWindow(const WindowSettings& settings)
 {
-    const WindowId id = m_nextWindowId;
+    const auto id = m_nextWindowId;
     ++m_nextWindowId.value;
     m_windows.emplace(id, std::make_shared<GLFWWindow>(id, settings));
     m_windowCreatedEvent.invoke(id);

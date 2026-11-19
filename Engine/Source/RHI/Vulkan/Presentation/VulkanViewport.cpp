@@ -27,8 +27,8 @@ VulkanViewport::VulkanViewport(const VulkanRHIDevice& rhiDevice,           //
       m_surface(rhiDevice.instance().handle(), nativeWindowHandle),        //
       m_presentationState(rhiDevice.device(), rhiDevice.commandPool())
 {
-    const VulkanDevice& device  = m_rhiDevice.device();
-    const VkSurfaceKHR  surface = m_surface.handle();
+    const auto& device  = m_rhiDevice.device();
+    const auto  surface = m_surface.handle();
 
     // create swapchain ->
     const VulkanSwapchainSettings settings{
@@ -51,10 +51,10 @@ void VulkanViewport::resize(int32 width, int32 height)
 
 void VulkanViewport::beginFrame()
 {
-    const VulkanFrame&         frame                   = m_presentationState.currentFrame();
-    const VulkanCommandBuffer& commandBuffer           = frame.commandBuffer();
-    const VulkanFence&         inFlightFence           = frame.inFlightFence();
-    const VulkanSemaphore&     imageAvailableSemaphore = frame.imageAvailableSemaphore();
+    const auto& frame                   = m_presentationState.currentFrame();
+    const auto& commandBuffer           = frame.commandBuffer();
+    const auto& inFlightFence           = frame.inFlightFence();
+    const auto& imageAvailableSemaphore = frame.imageAvailableSemaphore();
 
     // acquire image ->
     inFlightFence.wait();
@@ -66,15 +66,15 @@ void VulkanViewport::beginFrame()
 
 void VulkanViewport::endFrame()
 {
-    const VulkanQueue&         graphicsQueue           = m_rhiDevice.device().graphicsQueue();
-    const VulkanSwapchain&     swapchain               = m_presentationState.currentSwapchain();
-    const uint32               imageIndex              = m_presentationState.imageIndex();
-    VulkanImage&               image                   = m_presentationState.currentImage();
-    const VulkanSemaphore&     renderFinishedSemaphore = m_presentationState.currentRenderFinishedSemaphore();
-    const VulkanFrame&         frame                   = m_presentationState.currentFrame();
-    const VulkanCommandBuffer& commandBuffer           = frame.commandBuffer();
-    const VulkanFence&         inFlightFence           = frame.inFlightFence();
-    const VulkanSemaphore&     imageAvailableSemaphore = frame.imageAvailableSemaphore();
+    const auto& graphicsQueue           = m_rhiDevice.device().graphicsQueue();
+    const auto& swapchain               = m_presentationState.currentSwapchain();
+    const auto  imageIndex              = m_presentationState.imageIndex();
+    auto&       image                   = m_presentationState.currentImage();
+    const auto& renderFinishedSemaphore = m_presentationState.currentRenderFinishedSemaphore();
+    const auto& frame                   = m_presentationState.currentFrame();
+    const auto& commandBuffer           = frame.commandBuffer();
+    const auto& inFlightFence           = frame.inFlightFence();
+    const auto& imageAvailableSemaphore = frame.imageAvailableSemaphore();
 
     // end recording ->
     VulkanSync::transitionImage(commandBuffer, image, VulkanResourceState::Present);
@@ -98,9 +98,9 @@ IRHITexture& VulkanViewport::backBuffer()
 
 void VulkanViewport::recreateSwapchain(int32 width, int32 height)
 {
-    const VulkanDevice&  device       = m_rhiDevice.device();
-    const VkSurfaceKHR   surface      = m_surface.handle();
-    const VkSwapchainKHR oldSwapchain = m_presentationState.currentSwapchain().handle();
+    const auto& device       = m_rhiDevice.device();
+    const auto  surface      = m_surface.handle();
+    const auto  oldSwapchain = m_presentationState.currentSwapchain().handle();
 
     NX_VULKAN_CHECK(vkDeviceWaitIdle(device.logicalDevice()));
 
@@ -116,15 +116,14 @@ void VulkanViewport::recreateSwapchain(int32 width, int32 height)
 
 uint32 VulkanViewport::acquireNextImage(const VulkanSemaphore& signalSemaphore)
 {
-    const VkDevice    logicalDevice = m_rhiDevice.device().logicalDevice();
-    const VkSemaphore semaphore     = signalSemaphore.handle();
+    const auto logicalDevice = m_rhiDevice.device().logicalDevice();
+    const auto semaphore     = signalSemaphore.handle();
 
     while (true)
     {
-        const VulkanSwapchain& swapchain  = m_presentationState.currentSwapchain();
-        uint32                 imageIndex = 0;
-        const VkResult         result =
-            vkAcquireNextImageKHR(logicalDevice, swapchain.handle(), UINT64_MAX, semaphore, VK_NULL_HANDLE, &imageIndex);
+        const auto& swapchain  = m_presentationState.currentSwapchain();
+        uint32      imageIndex = 0;
+        const auto  result = vkAcquireNextImageKHR(logicalDevice, swapchain.handle(), UINT64_MAX, semaphore, VK_NULL_HANDLE, &imageIndex);
         if (result != VK_ERROR_OUT_OF_DATE_KHR)
         {
             NX_VULKAN_CHECK(result);

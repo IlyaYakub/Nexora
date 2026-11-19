@@ -43,8 +43,8 @@ namespace Nexora
 
 void VulkanSync::transitionImage(const VulkanCommandBuffer& commandBuffer, VulkanImage& image, VulkanResourceState newState)
 {
-    const SyncState oldSyncState = toSyncState(image.state());
-    const SyncState newSyncState = toSyncState(newState);
+    const auto oldSyncState = toSyncState(image.state());
+    const auto newSyncState = toSyncState(newState);
 
     const VkImageMemoryBarrier2 barrier{
         .sType            = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2,

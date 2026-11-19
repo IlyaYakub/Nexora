@@ -13,8 +13,8 @@ TEST(WindowTest, ShouldCreateWindowWithRequestedSize)
         .height = 480,
     };
 
-    const WindowId                 windowId = windowManager.createWindow(settings);
-    const std::shared_ptr<IWindow> window   = windowManager.getWindowById(windowId);
+    const auto windowId = windowManager.createWindow(settings);
+    const auto window   = windowManager.getWindowById(windowId);
 
     EXPECT_EQ(window->width(), 640);
     EXPECT_EQ(window->height(), 480);
@@ -26,7 +26,7 @@ TEST(WindowTest, ShouldNotifyWhenWindowCreated)
     WindowId          createdId;
     windowManager.windowCreatedEvent().add([&createdId](WindowId id) { createdId = id; });
 
-    const WindowId windowId = windowManager.createWindow(WindowSettings{});
+    const auto windowId = windowManager.createWindow(WindowSettings{});
 
     EXPECT_EQ(createdId, windowId);
 }
@@ -35,8 +35,8 @@ TEST(WindowTest, ShouldGiveEachWindowUniqueId)
 {
     GLFWWindowManager windowManager;
 
-    const WindowId firstId  = windowManager.createWindow(WindowSettings{});
-    const WindowId secondId = windowManager.createWindow(WindowSettings{});
+    const auto firstId  = windowManager.createWindow(WindowSettings{});
+    const auto secondId = windowManager.createWindow(WindowSettings{});
 
     EXPECT_NE(firstId, secondId);
 }

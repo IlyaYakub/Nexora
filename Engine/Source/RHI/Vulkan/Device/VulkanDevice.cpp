@@ -16,7 +16,7 @@ VkPhysicalDevice selectPhysicalDevice(VkInstance instance)
     std::vector<VkPhysicalDevice> physicalDevices(physicalDeviceCount);
     NX_VULKAN_CHECK(vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, physicalDevices.data()));
 
-    for (const VkPhysicalDevice physicalDevice : physicalDevices)
+    for (const auto physicalDevice : physicalDevices)
     {
         VkPhysicalDeviceProperties properties{};
         vkGetPhysicalDeviceProperties(physicalDevice, &properties);
@@ -57,7 +57,7 @@ namespace Nexora
 
 VulkanDevice::VulkanDevice(const VulkanInstance& instance) : m_physicalDevice(selectPhysicalDevice(instance.handle()))
 {
-    const uint32 graphicsQueueFamilyIndex = findGraphicsQueueFamilyIndex(m_physicalDevice);
+    const auto graphicsQueueFamilyIndex = findGraphicsQueueFamilyIndex(m_physicalDevice);
 
     // create ->
     const float                   queuePriority = 1.0f;

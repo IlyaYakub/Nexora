@@ -1,5 +1,6 @@
 #include "Renderer/Renderer.h"
 
+#include "RHI/IRHICommandList.h"
 #include "RHI/IRHIDevice.h"
 #include "RHI/IRHIViewport.h"
 #include "Window/IWindowManager.h"
@@ -20,27 +21,32 @@ void Renderer::render()
 {
     for (const auto& [windowId, viewport] : m_viewports)
     {
-        const std::shared_ptr<IWindow> window = m_windowManager.getWindowById(windowId);
+        const auto window = m_windowManager.getWindowById(windowId);
         if (window->hasZeroSize())
         {
             continue;
         }
 
         viewport->beginFrame();
+
+        auto& commandList = viewport->commandList();
+        commandList.beginRendering(viewport->backBuffer(), std::nullopt);
+        commandList.endRendering();
+
         viewport->endFrame();
     }
 }
 
 void Renderer::onWindowCreated(WindowId id)
 {
-    const std::shared_ptr<IWindow> window = m_windowManager.getWindowById(id);
+    const auto window = m_windowManager.getWindowById(id);
     window->windowEvent().add(this, &Renderer::onWindowEvent);
     m_viewports.emplace(id, m_rhiDevice.createViewport(window->nativeHandle(), window->width(), window->height()));
 }
 
 void Renderer::onWindowResized(WindowId id, int32 width, int32 height)
 {
-    const std::shared_ptr<IWindow> window = m_windowManager.getWindowById(id);
+    const auto window = m_windowManager.getWindowById(id);
     if (window->hasZeroSize())
     {
         return;

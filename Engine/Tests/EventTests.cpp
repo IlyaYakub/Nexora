@@ -18,9 +18,9 @@ TEST(EventTest, ShouldInvokeListenersInSubscriptionOrder)
 
 TEST(EventTest, ShouldNotInvokeRemovedListener)
 {
-    Event<>     event;
-    int32       calls       = 0;
-    EventHandle eventHandle = event.add([&] { ++calls; });
+    Event<> event;
+    int32   calls       = 0;
+    auto    eventHandle = event.add([&] { ++calls; });
     event.remove(eventHandle);
 
     event.invoke();

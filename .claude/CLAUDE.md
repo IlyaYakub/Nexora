@@ -46,7 +46,7 @@ Reference for the simplified version: [LifeExeEngine](https://github.com/life-ex
 - Each distinct step of a method's logic gets its own named private method instead of an inline expression
   (`removeClosedWindows()` rather than `std::erase_if(...)` inside `update()`).
 - Gather first, then use: a method that works with values from members or getters fetches them once into named `const`
-  locals in one block at its top (`const VkDevice logicalDevice = m_device.device();`, `const VkFence inFlightFence = frame.inFlightFence();`),
+  locals in one block at its top (`const auto logicalDevice = m_device.logicalDevice();`, `const auto& inFlightFence = frame.inFlightFence();`),
   followed by an empty line, and its steps use only those locals. Values produced by a step (an acquired image index)
   are taken where they appear. A short method that uses each value once needs no such block.
   Every local is taken the same way, through a getter returning a reference (`m_presentationState.currentSwapchain()`),
@@ -60,6 +60,9 @@ Reference for the simplified version: [LifeExeEngine](https://github.com/life-ex
   working with the raw pointer from the user pointer directly. More code in `.cpp` is better than a bigger `.h`.
 - No exceptions. Unrecoverable failures (the engine cannot continue, e.g. window creation) log `Fatal`, which aborts.
   `std::expected<T, ErrorEnum>` only where the caller can actually handle the failure (e.g. a missing asset).
+- Locals use `auto` wherever the initializer gives the type: a call, a cast, a getter (`const auto window = m_windowManager.getWindowById(id);`,
+  `auto& commandList = viewport->commandList();`). Locals initialized by a literal keep their type (`uint32 count = 0;`).
+  One-off values go straight into the call, no named constant for them.
 - Store values in the types the consuming API takes (e.g. `int32` for GLFW sizes), so no casts are needed.
 - A constructor or factory that takes many parameters takes a settings struct instead (`WindowSettings` for `createWindow`).
 - Platform-specific code lives in its own small type and file (`VulkanSurface`), under `#if defined(_WIN32)` etc.,

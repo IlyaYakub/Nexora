@@ -12,10 +12,10 @@ namespace Nexora
 
 VulkanSwapchain::VulkanSwapchain(const VulkanDevice& device, const VulkanSwapchainSettings& settings) : m_device(device)
 {
-    const VkPhysicalDevice physicalDevice   = m_device.physicalDevice();
-    const VkDevice         logicalDevice    = m_device.logicalDevice();
-    const uint32           queueFamilyIndex = m_device.graphicsQueue().familyIndex();
-    const VkSurfaceKHR     surface          = settings.surface;
+    const auto physicalDevice   = m_device.physicalDevice();
+    const auto logicalDevice    = m_device.logicalDevice();
+    const auto queueFamilyIndex = m_device.graphicsQueue().familyIndex();
+    const auto surface          = settings.surface;
 
     checkPresentSupport(surface);
 
@@ -38,8 +38,8 @@ VulkanSwapchain::VulkanSwapchain(const VulkanDevice& device, const VulkanSwapcha
     m_height    = static_cast<int32>(swapchain->extent.height);
 
     // collect images ->
-    const std::vector<VkImage>     images     = swapchain->get_images().value();
-    const std::vector<VkImageView> imageViews = swapchain->get_image_views().value();
+    const auto images     = swapchain->get_images().value();
+    const auto imageViews = swapchain->get_image_views().value();
     for (uint32 i = 0; i < images.size(); ++i)
     {
         const VulkanImageSettings imageSettings{

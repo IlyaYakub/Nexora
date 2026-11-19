@@ -26,8 +26,8 @@ Engine::Engine()
         .width  = 1600,
         .height = 900,
     };
-    const WindowId                 windowId = m_windowManager->createWindow(settings);
-    const std::shared_ptr<IWindow> window   = m_windowManager->getWindowById(windowId);
+    const auto windowId = m_windowManager->createWindow(settings);
+    const auto window   = m_windowManager->getWindowById(windowId);
     window->windowEvent().add(this, &Engine::onWindowEvent);
 }
 

@@ -19,7 +19,7 @@ VulkanImage::VulkanImage(const VulkanDevice& device, const VulkanImageSettings& 
 
 VulkanImage::~VulkanImage()
 {
-    const VkDevice logicalDevice = m_device.logicalDevice();
+    const auto logicalDevice = m_device.logicalDevice();
 
     vkDestroyImageView(logicalDevice, m_view, nullptr);
     if (m_type != VulkanImageType::Swapchain)

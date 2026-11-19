@@ -83,7 +83,7 @@ Log::~Log() = default;
 
 void Log::log(const LogCategory& category, LogVerbosity verbosity, std::string_view message, const std::source_location& location) const
 {
-    std::string line = std::format("{}: {}: {}", category.name, toString(verbosity), message);
+    auto line = std::format("{}: {}: {}", category.name, toString(verbosity), message);
     if (shouldShowLocation(verbosity))
     {
         line += std::format(" ({}:{})", fileName(location.file_name()), location.line());

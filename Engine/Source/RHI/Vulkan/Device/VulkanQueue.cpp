@@ -49,8 +49,8 @@ void VulkanQueue::submit(const VulkanCommandBuffer& commandBuffer,
 
 void VulkanQueue::present(const VulkanSwapchain& swapchain, uint32 imageIndex, const VulkanSemaphore& waitSemaphore) const
 {
-    const VkSwapchainKHR swapchainHandle     = swapchain.handle();
-    const VkSemaphore    waitSemaphoreHandle = waitSemaphore.handle();
+    const auto swapchainHandle     = swapchain.handle();
+    const auto waitSemaphoreHandle = waitSemaphore.handle();
 
     const VkPresentInfoKHR presentInfo{
         .sType              = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
@@ -60,7 +60,7 @@ void VulkanQueue::present(const VulkanSwapchain& swapchain, uint32 imageIndex, c
         .pSwapchains        = &swapchainHandle,
         .pImageIndices      = &imageIndex,
     };
-    const VkResult result = vkQueuePresentKHR(m_queue, &presentInfo);
+    const auto result = vkQueuePresentKHR(m_queue, &presentInfo);
     if (result == VK_ERROR_OUT_OF_DATE_KHR)
     {
         return;
