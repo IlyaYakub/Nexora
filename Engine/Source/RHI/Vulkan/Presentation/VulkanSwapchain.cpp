@@ -3,24 +3,10 @@
 #include "RHI/Vulkan/Device/VulkanDevice.h"
 #include "RHI/Vulkan/Device/VulkanQueue.h"
 #include "RHI/Vulkan/Resource/VulkanImage.h"
+#include "RHI/Vulkan/VulkanMapper.h"
 #include "RHI/Vulkan/VulkanUtility.h"
 
 #include <VkBootstrap.h>
-
-namespace
-{
-
-VkFormat toVkFormat(Nexora::TextureFormat format)
-{
-    switch (format)
-    {
-        case Nexora::TextureFormat::Unknown: return VK_FORMAT_UNDEFINED;
-        case Nexora::TextureFormat::B8G8R8A8Srgb: return VK_FORMAT_B8G8R8A8_SRGB;
-    }
-    return VK_FORMAT_UNDEFINED;
-}
-
-}  // namespace
 
 namespace Nexora
 {
@@ -37,7 +23,7 @@ VulkanSwapchain::VulkanSwapchain(const VulkanDevice& device, const VulkanSwapcha
 
     // create ->
     const VkSurfaceFormatKHR surfaceFormat{
-        .format     = toVkFormat(format),
+        .format     = VulkanMapper::toVkFormat(format),
         .colorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR,
     };
 

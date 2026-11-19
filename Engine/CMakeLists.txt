@@ -32,6 +32,8 @@ set(ENGINE_SOURCES
     Source/RHI/Vulkan/VulkanRHIDevice.h
     Source/RHI/Vulkan/VulkanRHIDevice.cpp
     Source/RHI/Vulkan/VulkanUtility.h
+    Source/RHI/Vulkan/VulkanMapper.h
+    Source/RHI/Vulkan/VulkanMapper.cpp
     Source/RHI/Vulkan/Device/VulkanInstance.h
     Source/RHI/Vulkan/Device/VulkanInstance.cpp
     Source/RHI/Vulkan/Device/VulkanDevice.h

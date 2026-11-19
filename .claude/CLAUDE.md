@@ -31,6 +31,7 @@ Reference for the simplified version: [LifeExeEngine](https://github.com/life-ex
 - Standard headers needed by `.cpp` files go into `Source/pch.h` (force-included), not into the `.cpp`.
   Third-party headers stay in the `.cpp` that uses them. Headers (`.h`) keep their own includes.
 - Third-party types never leak into interfaces (`.h`); only `.cpp` files use them.
+  Exception: `RHI/Vulkan/VulkanMapper.h` includes `<vulkan/vulkan.h>`, since its mappers return Vulkan enums that cannot be forward-declared.
   Exception: glm is the engine math library, its types are used in interfaces (`beginRendering(IRHITexture&, const std::optional<glm::vec4>&)`).
 - Interface + `final` implementation, dependency injection through interfaces.
 - Managers store their objects as `std::shared_ptr<IObject>` in a `std::unordered_map` keyed by a strong-typed id
