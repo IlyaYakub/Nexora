@@ -24,6 +24,7 @@ struct VulkanImageSettings
     VkImageView_T*  view{nullptr};
     uint32          width{0};
     uint32          height{0};
+    TextureFormat   format{TextureFormat::Unknown};
     VulkanImageType type{VulkanImageType::Unknown};
 };
 
@@ -38,6 +39,7 @@ public:
     VkImageView_T*      view() const;
     uint32              width() const;
     uint32              height() const;
+    TextureFormat       format() const override;
     VulkanResourceState state() const;
 
     // setters
@@ -49,6 +51,7 @@ private:
     VkImageView_T*      m_view{nullptr};
     uint32              m_width{0};
     uint32              m_height{0};
+    TextureFormat       m_format{TextureFormat::Unknown};
     VulkanImageType     m_type{VulkanImageType::Unknown};
     VulkanResourceState m_state{VulkanResourceState::Unknown};
 };

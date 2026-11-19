@@ -13,6 +13,7 @@ VulkanImage::VulkanImage(const VulkanDevice& device, const VulkanImageSettings& 
       m_view(settings.view),      //
       m_width(settings.width),    //
       m_height(settings.height),  //
+      m_format(settings.format),  //
       m_type(settings.type)
 {
 }
@@ -46,6 +47,11 @@ uint32 VulkanImage::width() const
 uint32 VulkanImage::height() const
 {
     return m_height;
+}
+
+TextureFormat VulkanImage::format() const
+{
+    return m_format;
 }
 
 VulkanResourceState VulkanImage::state() const

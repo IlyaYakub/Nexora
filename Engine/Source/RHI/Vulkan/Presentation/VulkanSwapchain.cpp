@@ -7,6 +7,21 @@
 
 #include <VkBootstrap.h>
 
+namespace
+{
+
+VkFormat toVkFormat(Nexora::TextureFormat format)
+{
+    switch (format)
+    {
+        case Nexora::TextureFormat::Unknown: return VK_FORMAT_UNDEFINED;
+        case Nexora::TextureFormat::B8G8R8A8Srgb: return VK_FORMAT_B8G8R8A8_SRGB;
+    }
+    return VK_FORMAT_UNDEFINED;
+}
+
+}  // namespace
+
 namespace Nexora
 {
 
@@ -16,12 +31,19 @@ VulkanSwapchain::VulkanSwapchain(const VulkanDevice& device, const VulkanSwapcha
     const auto logicalDevice    = m_device.logicalDevice();
     const auto queueFamilyIndex = m_device.graphicsQueue().familyIndex();
     const auto surface          = settings.surface;
+    const auto format           = TextureFormat::B8G8R8A8Srgb;
 
     checkPresentSupport(surface);
 
     // create ->
+    const VkSurfaceFormatKHR surfaceFormat{
+        .format     = toVkFormat(format),
+        .colorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR,
+    };
+
     vkb::SwapchainBuilder builder{physicalDevice, logicalDevice, surface, queueFamilyIndex, queueFamilyIndex};
     builder
+        .set_desired_format(surfaceFormat)                                                              //
         .set_desired_extent(static_cast<uint32>(settings.width), static_cast<uint32>(settings.height))  //
         .set_image_usage_flags(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT)   //
         .set_desired_present_mode(VK_PRESENT_MODE_FIFO_KHR)                                             //
@@ -47,6 +69,7 @@ VulkanSwapchain::VulkanSwapchain(const VulkanDevice& device, const VulkanSwapcha
             .view   = imageViews[i],
             .width  = swapchain->extent.width,
             .height = swapchain->extent.height,
+            .format = format,
             .type   = VulkanImageType::Swapchain,
         };
         m_images.push_back(std::make_unique<VulkanImage>(m_device, imageSettings));
