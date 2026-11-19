@@ -1,6 +1,7 @@
 #include "RHI/Vulkan/Command/VulkanCommandList.h"
 
 #include "RHI/Vulkan/Command/VulkanCommandBuffer.h"
+#include "RHI/Vulkan/Pipeline/VulkanGraphicsPipeline.h"
 #include "RHI/Vulkan/Resource/VulkanImage.h"
 #include "RHI/Vulkan/Sync/VulkanSync.h"
 
@@ -13,11 +14,15 @@ VulkanCommandList::VulkanCommandList(const VulkanCommandBuffer& commandBuffer) :
 
 void VulkanCommandList::beginRendering(IRHITexture& texture, const std::optional<glm::vec4>& clearColor)
 {
-    auto&      image = static_cast<VulkanImage&>(texture);
-    const auto color = clearColor.value_or(glm::vec4{0.0f, 0.0f, 0.0f, 1.0f});
+    auto&      image         = static_cast<VulkanImage&>(texture);
+    const auto commandBuffer = m_commandBuffer.handle();
+    const auto width         = image.width();
+    const auto height        = image.height();
+    const auto color         = clearColor.value_or(glm::vec4{0.0f, 0.0f, 0.0f, 1.0f});
 
     VulkanSync::transitionImage(m_commandBuffer, image, VulkanResourceState::ColorAttachment);
 
+    // begin ->
     const VkRenderingAttachmentInfo colorAttachment{
         .sType       = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO,
         .imageView   = image.view(),
@@ -28,17 +33,40 @@ void VulkanCommandList::beginRendering(IRHITexture& texture, const std::optional
     };
     const VkRenderingInfo renderingInfo{
         .sType                = VK_STRUCTURE_TYPE_RENDERING_INFO,
-        .renderArea           = {.extent = {.width = image.width(), .height = image.height()}},
+        .renderArea           = {.extent = {.width = width, .height = height}},
         .layerCount           = 1,
         .colorAttachmentCount = 1,
         .pColorAttachments    = &colorAttachment,
     };
-    vkCmdBeginRendering(m_commandBuffer.handle(), &renderingInfo);
+    vkCmdBeginRendering(commandBuffer, &renderingInfo);
+
+    // set viewport and scissor ->
+    const VkViewport viewport{
+        .width    = static_cast<float>(width),
+        .height   = static_cast<float>(height),
+        .maxDepth = 1.0f,
+    };
+    const VkRect2D scissor{
+        .extent = {.width = width, .height = height},
+    };
+    vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+    vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 }
 
 void VulkanCommandList::endRendering()
 {
     vkCmdEndRendering(m_commandBuffer.handle());
+}
+
+void VulkanCommandList::setPipeline(const IRHIGraphicsPipeline& pipeline)
+{
+    const auto& vulkanPipeline = static_cast<const VulkanGraphicsPipeline&>(pipeline);
+    vkCmdBindPipeline(m_commandBuffer.handle(), VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline.pipeline());
+}
+
+void VulkanCommandList::draw(uint32 vertexCount)
+{
+    vkCmdDraw(m_commandBuffer.handle(), vertexCount, 1, 0, 0);
 }
 
 }  // namespace Nexora

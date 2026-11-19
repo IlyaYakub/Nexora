@@ -15,6 +15,8 @@ public:
     // core
     void beginRendering(IRHITexture& texture, const std::optional<glm::vec4>& clearColor) override;
     void endRendering() override;
+    void setPipeline(const IRHIGraphicsPipeline& pipeline) override;
+    void draw(uint32 vertexCount) override;
 
 private:
     const VulkanCommandBuffer& m_commandBuffer;
