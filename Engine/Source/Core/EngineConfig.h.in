@@ -5,6 +5,7 @@
 namespace Nexora
 {
 
-constexpr std::string_view c_engineVersion = "@PROJECT_VERSION@";
+constexpr std::string_view c_engineVersion   = "@PROJECT_VERSION@";
+constexpr std::string_view c_shaderDirectory = "@CMAKE_CURRENT_SOURCE_DIR@/Shaders";
 
 }  // namespace Nexora

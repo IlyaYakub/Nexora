@@ -11,14 +11,18 @@ namespace Nexora
 {
 
 class IRHIDevice;
+class IRHIGraphicsPipeline;
 class IRHIViewport;
+class IShaderCompiler;
 class IWindowManager;
 struct InputEvent;
 
 class Renderer final : public NonCopyable
 {
 public:
-    Renderer(IWindowManager& windowManager, IRHIDevice& rhiDevice);
+    Renderer(IWindowManager& windowManager,  //
+        IRHIDevice&          rhiDevice,      //
+        IShaderCompiler&     shaderCompiler);
     ~Renderer();
 
     // core
@@ -31,6 +35,7 @@ private:
 
     IWindowManager&                                             m_windowManager;
     IRHIDevice&                                                 m_rhiDevice;
+    std::unique_ptr<IRHIGraphicsPipeline>                       m_pipeline;
     std::unordered_map<WindowId, std::unique_ptr<IRHIViewport>> m_viewports;
 };
 

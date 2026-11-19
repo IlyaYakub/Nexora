@@ -3,6 +3,7 @@
 #include "Core/EngineConfig.h"
 #include "Core/Timer.h"
 #include "Log/Log.h"
+#include "RHI/Slang/SlangShaderCompiler.h"
 #include "RHI/Vulkan/VulkanRHIDevice.h"
 #include "Renderer/Renderer.h"
 #include "Window/GLFW/GLFWWindowManager.h"
@@ -13,10 +14,11 @@ namespace Nexora
 {
 
 Engine::Engine()
-    : m_windowManager(std::make_unique<GLFWWindowManager>()),  //
-      m_timer(std::make_unique<Timer>()),                      //
-      m_rhiDevice(std::make_unique<VulkanRHIDevice>()),        //
-      m_renderer(std::make_unique<Renderer>(*m_windowManager, *m_rhiDevice))
+    : m_windowManager(std::make_unique<GLFWWindowManager>()),     //
+      m_timer(std::make_unique<Timer>()),                         //
+      m_rhiDevice(std::make_unique<VulkanRHIDevice>()),           //
+      m_shaderCompiler(std::make_unique<SlangShaderCompiler>()),  //
+      m_renderer(std::make_unique<Renderer>(*m_windowManager, *m_rhiDevice, *m_shaderCompiler))
 {
     NX_LOG(LogEngine, Display, "Nexora {}", c_engineVersion);
 

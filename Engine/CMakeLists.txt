@@ -74,6 +74,7 @@ set(ENGINE_SOURCES
     Source/RHI/Vulkan/Sync/VulkanSemaphore.cpp
     Source/Renderer/Renderer.h
     Source/Renderer/Renderer.cpp
+    Shaders/Triangle.slang
 )
 
 configure_file(Source/Core/EngineConfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/Generated/Core/EngineConfig.h)
