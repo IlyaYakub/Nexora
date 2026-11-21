@@ -12,7 +12,8 @@ enum class ShaderStage : uint8
 {
     Unknown,
     Vertex,
-    Fragment
+    Fragment,
+    Compute
 };
 
 struct ShaderBytecode

@@ -31,11 +31,11 @@ void Renderer::render()
 
         viewport->beginFrame();
 
-        auto&                commandList = viewport->commandList();
         const RenderPassInfo renderPassInfo{
             .colorTarget = &viewport->backBuffer(),
             .loadAction  = RenderTargetLoadAction::Clear,
         };
+        auto& commandList = viewport->commandList();
         commandList.beginRenderPass(renderPassInfo);
         commandList.endRenderPass();
 

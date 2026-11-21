@@ -1,10 +1,10 @@
 #include "RHI/Vulkan/Public/VulkanCommandList.h"
 
 #include "RHI/Vulkan/Public/VulkanCommandBuffer.h"
-#include "RHI/Vulkan/Public/VulkanGraphicsPipeline.h"
 #include "RHI/Vulkan/Public/VulkanImage.h"
 #include "RHI/Vulkan/Public/VulkanSync.h"
 #include "RHI/Vulkan/Public/VulkanMapper.h"
+#include "RHI/Vulkan/Public/VulkanPipeline.h"
 
 namespace Nexora
 {
@@ -57,15 +57,21 @@ void VulkanCommandList::endRenderPass()
     vkCmdEndRendering(m_commandBuffer.handle());
 }
 
-void VulkanCommandList::setPipeline(const IRHIGraphicsPipeline& pipeline)
+void VulkanCommandList::setPipeline(const IRHIPipeline& pipeline)
 {
-    const auto& vulkanPipeline = static_cast<const VulkanGraphicsPipeline&>(pipeline);
-    vkCmdBindPipeline(m_commandBuffer.handle(), VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline.pipeline());
+    const auto& vulkanPipeline = static_cast<const VulkanPipeline&>(pipeline);
+    const auto  bindPoint      = VulkanMapper::toVkPipelineBindPoint(vulkanPipeline.type());
+    vkCmdBindPipeline(m_commandBuffer.handle(), bindPoint, vulkanPipeline.pipeline());
 }
 
 void VulkanCommandList::draw(uint32 vertexCount)
 {
     vkCmdDraw(m_commandBuffer.handle(), vertexCount, 1, 0, 0);
+}
+
+void VulkanCommandList::dispatch(uint32 groupCountX, uint32 groupCountY, uint32 groupCountZ)
+{
+    vkCmdDispatch(m_commandBuffer.handle(), groupCountX, groupCountY, groupCountZ);
 }
 
 }  // namespace Nexora

@@ -1,8 +1,8 @@
-#include "RHI/Vulkan/Public/VulkanGraphicsPipeline.h"
+#include "RHI/Vulkan/Public/VulkanPipeline.h"
 
 #include "RHI/Vulkan/Public/VulkanDevice.h"
-#include "RHI/Vulkan/Public/VulkanShader.h"
 #include "RHI/Vulkan/Public/VulkanMapper.h"
+#include "RHI/Vulkan/Public/VulkanShader.h"
 #include "RHI/Vulkan/Public/VulkanUtility.h"
 
 namespace
@@ -19,23 +19,11 @@ VkPipelineShaderStageCreateInfo toShaderStageInfo(const Nexora::IRHIShader& shad
     };
 }
 
-}  // namespace
-
-namespace Nexora
+VkPipeline createGraphicsPipeline(VkDevice logicalDevice, VkPipelineLayout pipelineLayout, const Nexora::PipelineSettings& settings)
 {
+    const auto colorFormat = Nexora::VulkanMapper::toVkFormat(settings.colorFormat);
 
-VulkanGraphicsPipeline::VulkanGraphicsPipeline(const VulkanDevice& device, const GraphicsPipelineSettings& settings) : m_device(device)
-{
-    const auto logicalDevice = m_device.logicalDevice();
-    const auto colorFormat   = VulkanMapper::toVkFormat(settings.colorFormat);
-
-    // create layout ->
-    const VkPipelineLayoutCreateInfo layoutInfo{
-        .sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
-    };
-    NX_VULKAN_CHECK(vkCreatePipelineLayout(logicalDevice, &layoutInfo, nullptr, &m_pipelineLayout));
-
-    // create ->
+    // describe state ->
     const VkPipelineShaderStageCreateInfo shaderStages[] = {
         toShaderStageInfo(*settings.vertexShader),
         toShaderStageInfo(*settings.fragmentShader),
@@ -85,6 +73,8 @@ VulkanGraphicsPipeline::VulkanGraphicsPipeline(const VulkanDevice& device, const
         .colorAttachmentCount    = 1,
         .pColorAttachmentFormats = &colorFormat,
     };
+
+    // create ->
     const VkGraphicsPipelineCreateInfo pipelineInfo{
         .sType               = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
         .pNext               = &renderingInfo,
@@ -97,12 +87,52 @@ VulkanGraphicsPipeline::VulkanGraphicsPipeline(const VulkanDevice& device, const
         .pMultisampleState   = &multisampleInfo,
         .pColorBlendState    = &colorBlendInfo,
         .pDynamicState       = &dynamicInfo,
-        .layout              = m_pipelineLayout,
+        .layout              = pipelineLayout,
     };
-    NX_VULKAN_CHECK(vkCreateGraphicsPipelines(logicalDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_pipeline));
+    VkPipeline pipeline = VK_NULL_HANDLE;
+    NX_VULKAN_CHECK(vkCreateGraphicsPipelines(logicalDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline));
+    return pipeline;
 }
 
-VulkanGraphicsPipeline::~VulkanGraphicsPipeline()
+VkPipeline createComputePipeline(VkDevice logicalDevice, VkPipelineLayout pipelineLayout, const Nexora::PipelineSettings& settings)
+{
+    const VkComputePipelineCreateInfo pipelineInfo{
+        .sType  = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO,
+        .stage  = toShaderStageInfo(*settings.computeShader),
+        .layout = pipelineLayout,
+    };
+    VkPipeline pipeline = VK_NULL_HANDLE;
+    NX_VULKAN_CHECK(vkCreateComputePipelines(logicalDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline));
+    return pipeline;
+}
+
+}  // namespace
+
+namespace Nexora
+{
+
+VulkanPipeline::VulkanPipeline(const VulkanDevice& device, const PipelineSettings& settings)
+    : m_device(device),  //
+      m_type(settings.type)
+{
+    const auto logicalDevice = m_device.logicalDevice();
+
+    // create layout ->
+    const VkPipelineLayoutCreateInfo layoutInfo{
+        .sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
+    };
+    NX_VULKAN_CHECK(vkCreatePipelineLayout(logicalDevice, &layoutInfo, nullptr, &m_pipelineLayout));
+
+    // create ->
+    switch (m_type)
+    {
+        case PipelineType::Unknown: break;
+        case PipelineType::Graphics: m_pipeline = createGraphicsPipeline(logicalDevice, m_pipelineLayout, settings); break;
+        case PipelineType::Compute: m_pipeline = createComputePipeline(logicalDevice, m_pipelineLayout, settings); break;
+    }
+}
+
+VulkanPipeline::~VulkanPipeline()
 {
     const auto logicalDevice = m_device.logicalDevice();
 
@@ -110,7 +140,12 @@ VulkanGraphicsPipeline::~VulkanGraphicsPipeline()
     vkDestroyPipelineLayout(logicalDevice, m_pipelineLayout, nullptr);
 }
 
-VkPipeline_T* VulkanGraphicsPipeline::pipeline() const
+PipelineType VulkanPipeline::type() const
+{
+    return m_type;
+}
+
+VkPipeline_T* VulkanPipeline::pipeline() const
 {
     return m_pipeline;
 }

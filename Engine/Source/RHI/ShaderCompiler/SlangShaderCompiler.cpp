@@ -16,6 +16,7 @@ Nexora::ShaderStage toShaderStage(SlangStage stage)
     {
         case SLANG_STAGE_VERTEX: return Nexora::ShaderStage::Vertex;
         case SLANG_STAGE_FRAGMENT: return Nexora::ShaderStage::Fragment;
+        case SLANG_STAGE_COMPUTE: return Nexora::ShaderStage::Compute;
         default: return Nexora::ShaderStage::Unknown;
     }
 }

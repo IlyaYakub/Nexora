@@ -31,7 +31,7 @@ set(ENGINE_SOURCES
     Source/RHI/IRHITexture.h
     Source/RHI/IRHIShader.h
     Source/RHI/ShaderCompiler/IShaderCompiler.h
-    Source/RHI/IRHIGraphicsPipeline.h
+    Source/RHI/IRHIPipeline.h
     Source/RHI/Vulkan/Public/VulkanRHIDevice.h
     Source/RHI/Vulkan/Private/VulkanRHIDevice.cpp
     Source/RHI/Vulkan/Public/VulkanUtility.h
@@ -63,8 +63,8 @@ set(ENGINE_SOURCES
     Source/RHI/Vulkan/Private/VulkanImage.cpp
     Source/RHI/Vulkan/Public/VulkanShader.h
     Source/RHI/Vulkan/Private/VulkanShader.cpp
-    Source/RHI/Vulkan/Public/VulkanGraphicsPipeline.h
-    Source/RHI/Vulkan/Private/VulkanGraphicsPipeline.cpp
+    Source/RHI/Vulkan/Public/VulkanPipeline.h
+    Source/RHI/Vulkan/Private/VulkanPipeline.cpp
     Source/RHI/ShaderCompiler/SlangShaderCompiler.h
     Source/RHI/ShaderCompiler/SlangShaderCompiler.cpp
     Source/RHI/Vulkan/Public/VulkanResourceState.h

@@ -3,8 +3,8 @@
 #include "RHI/Vulkan/Public/VulkanCommandPool.h"
 #include "RHI/Vulkan/Public/VulkanDevice.h"
 #include "RHI/Vulkan/Public/VulkanInstance.h"
+#include "RHI/Vulkan/Public/VulkanPipeline.h"
 #include "RHI/Vulkan/Public/VulkanQueue.h"
-#include "RHI/Vulkan/Public/VulkanGraphicsPipeline.h"
 #include "RHI/Vulkan/Public/VulkanViewport.h"
 #include "RHI/Vulkan/Public/VulkanShader.h"
 
@@ -30,9 +30,9 @@ std::unique_ptr<IRHIShader> VulkanRHIDevice::createShader(const ShaderBytecode& 
     return std::make_unique<VulkanShader>(*m_device, bytecode);
 }
 
-std::unique_ptr<IRHIGraphicsPipeline> VulkanRHIDevice::createGraphicsPipeline(const GraphicsPipelineSettings& settings)
+std::unique_ptr<IRHIPipeline> VulkanRHIDevice::createPipeline(const PipelineSettings& settings)
 {
-    return std::make_unique<VulkanGraphicsPipeline>(*m_device, settings);
+    return std::make_unique<VulkanPipeline>(*m_device, settings);
 }
 
 const VulkanInstance& VulkanRHIDevice::instance() const

@@ -20,6 +20,7 @@ VkShaderStageFlagBits toVkShaderStage(ShaderStage stage)
         case ShaderStage::Unknown: return VK_SHADER_STAGE_FLAG_BITS_MAX_ENUM;
         case ShaderStage::Vertex: return VK_SHADER_STAGE_VERTEX_BIT;
         case ShaderStage::Fragment: return VK_SHADER_STAGE_FRAGMENT_BIT;
+        case ShaderStage::Compute: return VK_SHADER_STAGE_COMPUTE_BIT;
     }
     return VK_SHADER_STAGE_FLAG_BITS_MAX_ENUM;
 }
@@ -34,6 +35,17 @@ VkAttachmentLoadOp toVkAttachmentLoadOp(RenderTargetLoadAction loadAction)
         case RenderTargetLoadAction::DontCare: return VK_ATTACHMENT_LOAD_OP_DONT_CARE;
     }
     return VK_ATTACHMENT_LOAD_OP_MAX_ENUM;
+}
+
+VkPipelineBindPoint toVkPipelineBindPoint(PipelineType type)
+{
+    switch (type)
+    {
+        case PipelineType::Unknown: return VK_PIPELINE_BIND_POINT_MAX_ENUM;
+        case PipelineType::Graphics: return VK_PIPELINE_BIND_POINT_GRAPHICS;
+        case PipelineType::Compute: return VK_PIPELINE_BIND_POINT_COMPUTE;
+    }
+    return VK_PIPELINE_BIND_POINT_MAX_ENUM;
 }
 
 std::string_view toString(VkResult result)

@@ -18,9 +18,9 @@ public:
     ~VulkanRHIDevice() override;
 
     // core
-    std::unique_ptr<IRHIViewport>         createViewport(const ViewportSettings& settings) override;
-    std::unique_ptr<IRHIShader>           createShader(const ShaderBytecode& bytecode) override;
-    std::unique_ptr<IRHIGraphicsPipeline> createGraphicsPipeline(const GraphicsPipelineSettings& settings) override;
+    std::unique_ptr<IRHIViewport> createViewport(const ViewportSettings& settings) override;
+    std::unique_ptr<IRHIShader>   createShader(const ShaderBytecode& bytecode) override;
+    std::unique_ptr<IRHIPipeline> createPipeline(const PipelineSettings& settings) override;
 
     // getters
     const VulkanInstance&    instance() const;

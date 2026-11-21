@@ -7,10 +7,10 @@
 namespace Nexora
 {
 
-class IRHIGraphicsPipeline;
+class IRHIPipeline;
 class IRHIShader;
 class IRHIViewport;
-struct GraphicsPipelineSettings;
+struct PipelineSettings;
 struct ShaderBytecode;
 struct ViewportSettings;
 
@@ -20,9 +20,9 @@ public:
     virtual ~IRHIDevice() = default;
 
     // core
-    virtual std::unique_ptr<IRHIViewport>         createViewport(const ViewportSettings& settings)                 = 0;
-    virtual std::unique_ptr<IRHIShader>           createShader(const ShaderBytecode& bytecode)                     = 0;
-    virtual std::unique_ptr<IRHIGraphicsPipeline> createGraphicsPipeline(const GraphicsPipelineSettings& settings) = 0;
+    virtual std::unique_ptr<IRHIViewport> createViewport(const ViewportSettings& settings) = 0;
+    virtual std::unique_ptr<IRHIShader>   createShader(const ShaderBytecode& bytecode)     = 0;
+    virtual std::unique_ptr<IRHIPipeline> createPipeline(const PipelineSettings& settings) = 0;
 };
 
 }  // namespace Nexora
