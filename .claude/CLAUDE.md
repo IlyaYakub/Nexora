@@ -11,6 +11,7 @@ Never silence a warning in engine code — fix it.
 - Silently translate every prompt into English and do all reasoning and work in English. Never show the translation.
 - Code, identifiers, comments, commit messages and docs are always in English.
 - Before writing any code, state the plan as briefly as possible: a few short bullets, no filler. Then write the code.
+- When asked to explain code, explain it as simply as possible, on one short, simple example.
 
 ## Style and architecture
 

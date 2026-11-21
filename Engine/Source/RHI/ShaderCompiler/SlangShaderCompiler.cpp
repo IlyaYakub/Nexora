@@ -1,5 +1,6 @@
 #include "RHI/ShaderCompiler/SlangShaderCompiler.h"
 
+#include "Core/File.h"
 #include "Log/Log.h"
 
 #include <slang-com-ptr.h>
@@ -34,12 +35,21 @@ namespace Nexora
 
 SlangShaderCompiler::SlangShaderCompiler()
 {
-    // create session ->
     if (SLANG_FAILED(slang::createGlobalSession(&m_globalSession)))
     {
         NX_LOG(LogShaderCompiler, Fatal, "Failed to create global session");
     }
+}
 
+SlangShaderCompiler::~SlangShaderCompiler()
+{
+    m_globalSession->release();
+}
+
+std::expected<ShaderBytecode, ShaderCompileError> SlangShaderCompiler::compile(const std::filesystem::path& path,
+    const std::string&                                                                                      entryPoint)
+{
+    // create session ->
     const slang::TargetDesc targetDesc{
         .format  = SLANG_SPIRV,
         .profile = m_globalSession->findProfile("spirv_1_6"),
@@ -48,25 +58,22 @@ SlangShaderCompiler::SlangShaderCompiler()
         .targets     = &targetDesc,
         .targetCount = 1,
     };
-    if (SLANG_FAILED(m_globalSession->createSession(sessionDesc, &m_session)))
+    Slang::ComPtr<slang::ISession> session;
+    if (SLANG_FAILED(m_globalSession->createSession(sessionDesc, session.writeRef())))
     {
         NX_LOG(LogShaderCompiler, Fatal, "Failed to create session");
     }
-}
-
-SlangShaderCompiler::~SlangShaderCompiler()
-{
-    m_session->release();
-    m_globalSession->release();
-}
-
-std::expected<ShaderBytecode, ShaderCompileError> SlangShaderCompiler::compile(const std::filesystem::path& path,
-    const std::string&                                                                                      entryPoint)
-{
-    Slang::ComPtr<slang::IBlob> diagnostics;
 
     // load ->
-    auto* module = m_session->loadModule(path.string().c_str(), diagnostics.writeRef());
+    const auto source = File::readText(path);
+    if (!source)
+    {
+        return std::unexpected(ShaderCompileError::CompilationFailed);
+    }
+
+    Slang::ComPtr<slang::IBlob> diagnostics;
+    auto*                       module =
+        session->loadModuleFromSourceString(path.stem().string().c_str(), path.string().c_str(), source->c_str(), diagnostics.writeRef());
     if (module == nullptr)
     {
         return compilationFailed(diagnostics);
@@ -82,7 +89,7 @@ std::expected<ShaderBytecode, ShaderCompileError> SlangShaderCompiler::compile(c
     // link ->
     slang::IComponentType*               components[] = {module, moduleEntryPoint};
     Slang::ComPtr<slang::IComponentType> program;
-    m_session->createCompositeComponentType(components, 2, program.writeRef(), diagnostics.writeRef());
+    session->createCompositeComponentType(components, 2, program.writeRef(), diagnostics.writeRef());
 
     Slang::ComPtr<slang::IComponentType> linkedProgram;
     if (SLANG_FAILED(program->link(linkedProgram.writeRef(), diagnostics.writeRef())))

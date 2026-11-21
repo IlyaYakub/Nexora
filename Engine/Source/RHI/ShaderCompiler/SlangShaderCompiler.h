@@ -5,7 +5,6 @@
 namespace slang
 {
 struct IGlobalSession;
-struct ISession;
 }  // namespace slang
 
 namespace Nexora
@@ -22,7 +21,6 @@ public:
 
 private:
     slang::IGlobalSession* m_globalSession{nullptr};
-    slang::ISession*       m_session{nullptr};
 };
 
 }  // namespace Nexora
