@@ -23,6 +23,9 @@ public:
     void*                     nativeHandle() const override;
     Event<const InputEvent&>& windowEvent() override;
 
+    // setters
+    void setTitle(const std::string& title) override;
+
 private:
     WindowId                 m_id;
     GLFWwindow*              m_window{nullptr};

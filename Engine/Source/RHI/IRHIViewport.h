@@ -2,12 +2,20 @@
 
 #include "Core/Types.h"
 #include "Core/Utility.h"
+#include "RHI/IRHITexture.h"
 
 namespace Nexora
 {
 
 class IRHICommandList;
-class IRHITexture;
+
+struct ViewportSettings
+{
+    void*         nativeWindowHandle{nullptr};
+    int32         width{0};
+    int32         height{0};
+    TextureFormat format{TextureFormat::Unknown};
+};
 
 class IRHIViewport : public NonCopyable
 {

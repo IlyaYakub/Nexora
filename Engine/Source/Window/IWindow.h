@@ -30,6 +30,9 @@ public:
     virtual int32                     height() const       = 0;
     virtual void*                     nativeHandle() const = 0;
     virtual Event<const InputEvent&>& windowEvent()        = 0;
+
+    // setters
+    virtual void setTitle(const std::string& title) = 0;
 };
 
 }  // namespace Nexora

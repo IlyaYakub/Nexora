@@ -10,6 +10,8 @@ set(ENGINE_SOURCES
     Source/Core/Engine.cpp
     Source/Core/Timer.h
     Source/Core/Timer.cpp
+    Source/Core/FrameStatistics.h
+    Source/Core/FrameStatistics.cpp
     Source/Log/Log.h
     Source/Log/Log.cpp
     Source/Event/Event.h
@@ -28,53 +30,56 @@ set(ENGINE_SOURCES
     Source/RHI/IRHICommandList.h
     Source/RHI/IRHITexture.h
     Source/RHI/IRHIShader.h
-    Source/RHI/IShaderCompiler.h
+    Source/RHI/ShaderCompiler/IShaderCompiler.h
     Source/RHI/IRHIGraphicsPipeline.h
-    Source/RHI/Vulkan/VulkanRHIDevice.h
-    Source/RHI/Vulkan/VulkanRHIDevice.cpp
-    Source/RHI/Vulkan/VulkanUtility.h
-    Source/RHI/Vulkan/VulkanMapper.h
-    Source/RHI/Vulkan/VulkanMapper.cpp
-    Source/RHI/Vulkan/Device/VulkanInstance.h
-    Source/RHI/Vulkan/Device/VulkanInstance.cpp
-    Source/RHI/Vulkan/Device/VulkanDevice.h
-    Source/RHI/Vulkan/Device/VulkanDevice.cpp
-    Source/RHI/Vulkan/Device/VulkanQueue.h
-    Source/RHI/Vulkan/Device/VulkanQueue.cpp
-    Source/RHI/Vulkan/Command/VulkanCommandPool.h
-    Source/RHI/Vulkan/Command/VulkanCommandPool.cpp
-    Source/RHI/Vulkan/Command/VulkanCommandBuffer.h
-    Source/RHI/Vulkan/Command/VulkanCommandBuffer.cpp
-    Source/RHI/Vulkan/Command/VulkanCommandList.h
-    Source/RHI/Vulkan/Command/VulkanCommandList.cpp
-    Source/RHI/Vulkan/Presentation/VulkanSurface.h
-    Source/RHI/Vulkan/Presentation/VulkanSurface.cpp
-    Source/RHI/Vulkan/Presentation/VulkanSwapchain.h
-    Source/RHI/Vulkan/Presentation/VulkanSwapchain.cpp
-    Source/RHI/Vulkan/Presentation/VulkanViewport.h
-    Source/RHI/Vulkan/Presentation/VulkanViewport.cpp
-    Source/RHI/Vulkan/Presentation/VulkanFrame.h
-    Source/RHI/Vulkan/Presentation/VulkanFrame.cpp
-    Source/RHI/Vulkan/Presentation/VulkanPresentationState.h
-    Source/RHI/Vulkan/Presentation/VulkanPresentationState.cpp
-    Source/RHI/Vulkan/Resource/VulkanImage.h
-    Source/RHI/Vulkan/Resource/VulkanImage.cpp
-    Source/RHI/Vulkan/Resource/VulkanShader.h
-    Source/RHI/Vulkan/Resource/VulkanShader.cpp
-    Source/RHI/Vulkan/Pipeline/VulkanGraphicsPipeline.h
-    Source/RHI/Vulkan/Pipeline/VulkanGraphicsPipeline.cpp
-    Source/RHI/Slang/SlangShaderCompiler.h
-    Source/RHI/Slang/SlangShaderCompiler.cpp
-    Source/RHI/Vulkan/Sync/VulkanResourceState.h
-    Source/RHI/Vulkan/Sync/VulkanSync.h
-    Source/RHI/Vulkan/Sync/VulkanSync.cpp
-    Source/RHI/Vulkan/Sync/VulkanFence.h
-    Source/RHI/Vulkan/Sync/VulkanFence.cpp
-    Source/RHI/Vulkan/Sync/VulkanSemaphore.h
-    Source/RHI/Vulkan/Sync/VulkanSemaphore.cpp
+    Source/RHI/Vulkan/Public/VulkanRHIDevice.h
+    Source/RHI/Vulkan/Private/VulkanRHIDevice.cpp
+    Source/RHI/Vulkan/Public/VulkanUtility.h
+    Source/RHI/Vulkan/Public/VulkanMapper.h
+    Source/RHI/Vulkan/Private/VulkanMapper.cpp
+    Source/RHI/Vulkan/Public/VulkanInstance.h
+    Source/RHI/Vulkan/Private/VulkanInstance.cpp
+    Source/RHI/Vulkan/Public/VulkanDevice.h
+    Source/RHI/Vulkan/Private/VulkanDevice.cpp
+    Source/RHI/Vulkan/Public/VulkanQueue.h
+    Source/RHI/Vulkan/Private/VulkanQueue.cpp
+    Source/RHI/Vulkan/Public/VulkanCommandPool.h
+    Source/RHI/Vulkan/Private/VulkanCommandPool.cpp
+    Source/RHI/Vulkan/Public/VulkanCommandBuffer.h
+    Source/RHI/Vulkan/Private/VulkanCommandBuffer.cpp
+    Source/RHI/Vulkan/Public/VulkanCommandList.h
+    Source/RHI/Vulkan/Private/VulkanCommandList.cpp
+    Source/RHI/Vulkan/Public/VulkanSurface.h
+    Source/RHI/Vulkan/Private/VulkanSurface.cpp
+    Source/RHI/Vulkan/Public/VulkanSwapchain.h
+    Source/RHI/Vulkan/Private/VulkanSwapchain.cpp
+    Source/RHI/Vulkan/Public/VulkanViewport.h
+    Source/RHI/Vulkan/Private/VulkanViewport.cpp
+    Source/RHI/Vulkan/Public/VulkanFrame.h
+    Source/RHI/Vulkan/Private/VulkanFrame.cpp
+    Source/RHI/Vulkan/Public/VulkanPresentationState.h
+    Source/RHI/Vulkan/Private/VulkanPresentationState.cpp
+    Source/RHI/Vulkan/Public/VulkanImage.h
+    Source/RHI/Vulkan/Private/VulkanImage.cpp
+    Source/RHI/Vulkan/Public/VulkanShader.h
+    Source/RHI/Vulkan/Private/VulkanShader.cpp
+    Source/RHI/Vulkan/Public/VulkanGraphicsPipeline.h
+    Source/RHI/Vulkan/Private/VulkanGraphicsPipeline.cpp
+    Source/RHI/ShaderCompiler/SlangShaderCompiler.h
+    Source/RHI/ShaderCompiler/SlangShaderCompiler.cpp
+    Source/RHI/Vulkan/Public/VulkanResourceState.h
+    Source/RHI/Vulkan/Public/VulkanSync.h
+    Source/RHI/Vulkan/Private/VulkanSync.cpp
+    Source/RHI/Vulkan/Public/VulkanFence.h
+    Source/RHI/Vulkan/Private/VulkanFence.cpp
+    Source/RHI/Vulkan/Public/VulkanSemaphore.h
+    Source/RHI/Vulkan/Private/VulkanSemaphore.cpp
     Source/Renderer/Renderer.h
     Source/Renderer/Renderer.cpp
-    Shaders/Triangle.slang
+)
+
+set(SHADER_SOURCES
+    Tests/Shaders/TestShader.slang
 )
 
 configure_file(Source/Core/EngineConfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/Generated/Core/EngineConfig.h)
@@ -89,9 +94,8 @@ endif()
 find_package(spdlog REQUIRED)
 find_package(glfw3 REQUIRED)
 find_package(VulkanLoader REQUIRED)
-find_package(vk-bootstrap REQUIRED)
 find_package(glm REQUIRED)
-target_link_libraries(${PROJECT_NAME}Lib PRIVATE spdlog::spdlog glfw Vulkan::Loader vk-bootstrap::vk-bootstrap)
+target_link_libraries(${PROJECT_NAME}Lib PRIVATE spdlog::spdlog glfw Vulkan::Loader)
 target_link_libraries(${PROJECT_NAME}Lib PUBLIC glm::glm)
 
 cmake_path(CONVERT "$ENV{VULKAN_SDK}" TO_CMAKE_PATH_LIST VULKAN_SDK_DIR)
@@ -116,6 +120,9 @@ target_compile_definitions(${PROJECT_NAME}TestRunner PRIVATE NX_TEST_SHADER_DIRE
 include(GoogleTest)
 gtest_discover_tests(${PROJECT_NAME}TestRunner WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
-set_target_properties(${PROJECT_NAME} ${PROJECT_NAME}Lib ${PROJECT_NAME}TestRunner PROPERTIES FOLDER Engine)
+add_custom_target(${PROJECT_NAME}Shaders SOURCES ${SHADER_SOURCES})
+
+set_target_properties(${PROJECT_NAME} ${PROJECT_NAME}Lib ${PROJECT_NAME}TestRunner ${PROJECT_NAME}Shaders PROPERTIES FOLDER Engine)
 create_ide_folders(ENGINE_SOURCES)
+create_ide_folders(SHADER_SOURCES)
 setup_precompiled_headers(${PROJECT_NAME}Lib Source/pch.cpp Source/pch.h "${ENGINE_SOURCES}")

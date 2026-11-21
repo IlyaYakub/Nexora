@@ -1,10 +1,10 @@
 #include "Core/Engine.h"
 
 #include "Core/EngineConfig.h"
+#include "Core/FrameStatistics.h"
 #include "Core/Timer.h"
 #include "Log/Log.h"
-#include "RHI/Slang/SlangShaderCompiler.h"
-#include "RHI/Vulkan/VulkanRHIDevice.h"
+#include "RHI/Vulkan/Public/VulkanRHIDevice.h"
 #include "Renderer/Renderer.h"
 #include "Window/GLFW/GLFWWindowManager.h"
 
@@ -14,11 +14,10 @@ namespace Nexora
 {
 
 Engine::Engine()
-    : m_windowManager(std::make_unique<GLFWWindowManager>()),     //
-      m_timer(std::make_unique<Timer>()),                         //
-      m_rhiDevice(std::make_unique<VulkanRHIDevice>()),           //
-      m_shaderCompiler(std::make_unique<SlangShaderCompiler>()),  //
-      m_renderer(std::make_unique<Renderer>(*m_windowManager, *m_rhiDevice, *m_shaderCompiler))
+    : m_windowManager(std::make_unique<GLFWWindowManager>()),  //
+      m_timer(std::make_unique<Timer>()),                      //
+      m_rhiDevice(std::make_unique<VulkanRHIDevice>()),        //
+      m_renderer(std::make_unique<Renderer>(*m_windowManager, *m_rhiDevice))
 {
     NX_LOG(LogEngine, Display, "Nexora {}", c_engineVersion);
 
@@ -28,9 +27,9 @@ Engine::Engine()
         .width  = 1600,
         .height = 900,
     };
-    const auto windowId = m_windowManager->createWindow(settings);
-    const auto window   = m_windowManager->getWindowById(windowId);
-    window->windowEvent().add(this, &Engine::onWindowEvent);
+    const auto mainWindowId = m_windowManager->createWindow(settings);
+
+    m_frameStatistics = std::make_unique<FrameStatistics>(*m_timer, *m_windowManager, mainWindowId);
 }
 
 Engine::~Engine() = default;
@@ -40,44 +39,10 @@ void Engine::run()
     while (!m_windowManager->areAllWindowsClosed())
     {
         m_timer->tick();
+        m_frameStatistics->update();
         m_windowManager->update();
         m_renderer->render();
     }
-}
-
-void Engine::onWindowEvent(const InputEvent& event)
-{
-    std::visit(
-        Overloaded{
-            [](const KeyEventData& data)                                                                                              //
-            {                                                                                                                         //
-                NX_LOG(LogEngine, Display, "Key: key={}, action={}", std::to_underlying(data.key), std::to_underlying(data.action));  //
-            },                                                                                                                        //
-
-            [](const MouseButtonEventData& data)                                                                                      //
-            {                                                                                                                         //
-                NX_LOG(LogEngine, Display, "Mouse button: button={}, action={}", std::to_underlying(data.button),                     //
-                    std::to_underlying(data.action));                                                                                 //
-            },                                                                                                                        //
-
-            [](const MouseScrollEventData& data)                                                                                      //
-            {                                                                                                                         //
-                NX_LOG(LogEngine, Display, "Mouse scroll: x={}, y={}", data.xOffset, data.yOffset);                                   //
-            },                                                                                                                        //
-
-            [](const WindowResizeEventData& data)                                                                                     //
-            {                                                                                                                         //
-                NX_LOG(LogEngine, Display, "Resize: {}x{}", data.width, data.height);                                                 //
-            },                                                                                                                        //
-
-            [](const WindowCloseEventData&)                                                                                           //
-            {                                                                                                                         //
-                NX_LOG(LogEngine, Display, "Window closed");                                                                          //
-            },                                                                                                                        //
-
-            [](const auto&) {},
-        },
-        event.data);
 }
 
 }  // namespace Nexora

@@ -1,4 +1,4 @@
-#include "RHI/Slang/SlangShaderCompiler.h"
+#include "RHI/ShaderCompiler/SlangShaderCompiler.h"
 
 #include <gtest/gtest.h>
 

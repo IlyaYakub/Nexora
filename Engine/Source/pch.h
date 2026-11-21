@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <format>
 #include <memory>
+#include <ranges>
 #include <string>
 #include <string_view>
 #include <utility>

@@ -4,7 +4,9 @@
 #include "Window/GLFW/GLFWKeyMapper.h"
 
 #include <GLFW/glfw3.h>
+#if defined(_WIN32)
 #define GLFW_EXPOSE_NATIVE_WIN32
+#endif
 #include <GLFW/glfw3native.h>
 
 DEFINE_LOG_CATEGORY_STATIC(LogWindow);
@@ -125,6 +127,11 @@ void* GLFWWindow::nativeHandle() const
 Event<const InputEvent&>& GLFWWindow::windowEvent()
 {
     return m_windowEvent;
+}
+
+void GLFWWindow::setTitle(const std::string& title)
+{
+    glfwSetWindowTitle(m_window, title.c_str());
 }
 
 }  // namespace Nexora

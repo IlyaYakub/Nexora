@@ -31,7 +31,7 @@ Reference for the simplified version: [LifeExeEngine](https://github.com/life-ex
 - Standard headers needed by `.cpp` files go into `Source/pch.h` (force-included), not into the `.cpp`.
   Third-party headers stay in the `.cpp` that uses them. Headers (`.h`) keep their own includes.
 - Third-party types never leak into interfaces (`.h`); only `.cpp` files use them.
-  Exception: `RHI/Vulkan/VulkanMapper.h` includes `<vulkan/vulkan.h>`, since its mappers return Vulkan enums that cannot be forward-declared.
+  Exception: `RHI/Vulkan/Public/VulkanMapper.h` includes `<vulkan/vulkan.h>`, since its mappers return Vulkan enums that cannot be forward-declared.
   Exception: glm is the engine math library, its types are used in interfaces (`beginRendering(IRHITexture&, const std::optional<glm::vec4>&)`).
 - Interface + `final` implementation, dependency injection through interfaces.
 - Managers store their objects as `std::shared_ptr<IObject>` in a `std::unordered_map` keyed by a strong-typed id
@@ -128,4 +128,8 @@ Reference for the simplified version: [LifeExeEngine](https://github.com/life-ex
 | `Automation/` | Build, clean and format scripts |
 | `Config/` | Conan file, `.clang-format` |
 
-Every new file is added to `ENGINE_SOURCES` in `Engine/CMakeLists.txt`.
+`RHI/Vulkan/` keeps its headers in `Public/` and its sources in `Private/`, with no further subfolders
+(`#include "RHI/Vulkan/Public/VulkanDevice.h"`).
+
+Every new file is added to `ENGINE_SOURCES` in `Engine/CMakeLists.txt`; shaders (`.slang`) go into `SHADER_SOURCES`,
+shown in the IDE as the `NexoraEngineShaders` project and compiled at runtime, so they are edited without a rebuild.

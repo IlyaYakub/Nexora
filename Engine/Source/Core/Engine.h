@@ -7,12 +7,11 @@
 namespace Nexora
 {
 
+class FrameStatistics;
 class IRHIDevice;
-class IShaderCompiler;
 class IWindowManager;
 class Renderer;
 class Timer;
-struct InputEvent;
 
 class Engine final : public NonCopyable
 {
@@ -24,13 +23,11 @@ public:
     void run();
 
 private:
-    void onWindowEvent(const InputEvent& event);
-
     std::unique_ptr<IWindowManager>  m_windowManager;
     std::unique_ptr<Timer>           m_timer;
     std::unique_ptr<IRHIDevice>      m_rhiDevice;
-    std::unique_ptr<IShaderCompiler> m_shaderCompiler;
     std::unique_ptr<Renderer>        m_renderer;
+    std::unique_ptr<FrameStatistics> m_frameStatistics;
 };
 
 }  // namespace Nexora
